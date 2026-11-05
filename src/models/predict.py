@@ -34,8 +34,8 @@ class RamPricePredictor:
             rate_3m = 1.015   # +1.5%
             rate_6m = 1.032   # +3.2%
             trend_dir = "up"
-            rec_th = "🟢 ซื้อได้เลยตอนนี้ (ราคาลงมาถึงจุดต่ำสุดแล้ว อนาคตอาจขยับขึ้นเล็กน้อยเนื่องจากโรงงานลดกำลังผลิต)"
-            rec_en = "🟢 Best Time to Buy Now (Prices have bottomed out; supply is shifting to DDR5)"
+            rec_th = "ซื้อได้ตามความต้องการ (ราคาอยู่ในระดับต่ำสุดตามวงจรอายุตลาด อนาคตมีแนวโน้มขยับขึ้นเล็กน้อยตามการลดกำลังผลิตของโรงงานชิป)"
+            rec_en = "Optimal purchase timing (Prices have reached floor level; foundry capacity is transitioning to DDR5)"
             rec_badge_th = "ซื้อได้เลย ไม่ต้องรอ"
             rec_badge_en = "Buy Now"
             rec_type = "buy_now"
@@ -46,8 +46,8 @@ class RamPricePredictor:
                 rate_3m = 0.945   # -5.5%
                 rate_6m = 0.900   # -10.0%
                 trend_dir = "down"
-                rec_th = "🟡 รอได้ถ้าไม่รีบ (รุ่นสเปกสูง/บัสแรง มีแนวโน้มราคาจะลดลงอีก 5-10% ในช่วง 3-6 เดือนข้างหน้า)"
-                rec_en = "🟡 Wait if Possible (High-end DDR5 prices are expected to drop 5-10% in the next 3-6 months)"
+                rec_th = "รอได้หากไม่รีบใช้งาน (สเปกความเร็วสูงมีแนวโน้มราคาจะปรับลดลงอีก 5–10% ในช่วง 3–6 เดือนข้างหน้า)"
+                rec_en = "Wait if not urgent (High-spec memory premiums are projected to drop 5–10% over the next 3–6 months)"
                 rec_badge_th = "รอได้ถ้าไม่รีบ"
                 rec_badge_en = "Wait if Possible"
                 rec_type = "wait"
@@ -57,8 +57,8 @@ class RamPricePredictor:
                 rate_3m = 0.960   # -4.0%
                 rate_6m = 0.930   # -7.0%
                 trend_dir = "down"
-                rec_th = "🟢 ซื้อได้เลย หรือรอตามสะดวก (ราคาค่อยๆ ปรับลดลงอย่างชะลอตัว เป็นจังหวะที่ดีสำหรับการอัปเกรด)"
-                rec_en = "🟢 Good Time to Buy (Mainstream DDR5 prices are steadily stabilizing)"
+                rec_th = "จังหวะเหมาะสมในการจัดซื้อหรืออัปเกรด (ราคาทยอยปรับตัวลงอย่างมีเสถียรภาพ เหมาะสำหรับเริ่มประกอบเครื่อง)"
+                rec_en = "Favorable purchase timing (Mainstream DDR5 retail prices are steadily normalizing)"
                 rec_badge_th = "จังหวะดีน่าซื้อ"
                 rec_badge_en = "Good Time to Buy"
                 rec_type = "good_time"

@@ -365,6 +365,98 @@ st.markdown("""
         border-radius: var(--radius);
         overflow: hidden;
     }
+
+    /* Forecast Metric Cards */
+    .forecast-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: var(--space-3) var(--space-4);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 86px;
+    }
+    .forecast-card-label {
+        font-size: var(--text-xs);
+        color: var(--color-text-muted);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .forecast-card-val {
+        font-family: var(--font-mono);
+        font-size: var(--text-lg);
+        font-weight: 700;
+        color: var(--color-text-main);
+        margin: var(--space-1) 0;
+        line-height: 1.2;
+    }
+    .forecast-card-delta {
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: 600;
+    }
+    .delta-down {
+        color: var(--color-accent);
+    }
+    .delta-up {
+        color: var(--color-warning);
+    }
+    .delta-neutral {
+        color: var(--color-text-muted);
+    }
+
+    /* Purchase Advisory Callout */
+    .advisory-callout {
+        background-color: var(--color-canvas);
+        border: 1px solid var(--color-border);
+        border-left: 3px solid var(--color-accent);
+        border-radius: var(--radius);
+        padding: var(--space-3) var(--space-4);
+        margin: var(--space-4) 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+    .advisory-tag {
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: 700;
+        color: var(--color-accent);
+        letter-spacing: 0.05em;
+    }
+    .advisory-body {
+        font-size: var(--text-sm);
+        color: var(--color-text-main);
+        line-height: 1.5;
+    }
+
+    /* Tech Specification Box */
+    .tech-spec-box {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: var(--space-3) var(--space-4);
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+    }
+    .tech-spec-row {
+        display: flex;
+        justify-content: space-between;
+        padding: var(--space-2) 0;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    .tech-spec-row:last-child {
+        border-bottom: none;
+    }
+    .tech-spec-label {
+        color: var(--color-text-muted);
+    }
+    .tech-spec-val {
+        color: var(--color-text-main);
+        font-weight: 600;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -443,18 +535,29 @@ TRANSLATIONS = {
         "insights_brand_sub": "ค่า ฿/GB ต่ำ หมายถึงความจุต่อเม็ดเงินที่คุ้มค่ากว่า",
         "insights_speed_heading": "ความเร็วบัส (MHz) กับระดับราคา (บาท)",
         "insights_speed_sub": "DDR5 มีความเร็วบัส 4,800 - 8,000 MHz ให้แบนด์วิดท์สูงกว่า DDR4 อย่างมีนัยสำคัญ",
-        "pipeline_heading": "ระบบดึงข้อมูลและโมเดลประเมินราคา",
-        "model_stats_heading": "ประสิทธิภาพโมเดลประเมินราคา (ML Metrics):",
-        "live_sync_heading": "ซิงค์ราคาสดจากหน้าร้านค้า (Live Sync):",
-        "live_sync_sub": "รันสคริปต์ดึงข้อมูลล่าสุดจากร้านค้าไอทีเพื่ออัปเดตฐานข้อมูล",
-        "live_sync_btn": "ซิงค์ข้อมูลราคาเดี๋ยวนี้",
+        "pipeline_heading": "3. สเปกโมเดลประเมินราคาและระบบซิงค์หน้าร้าน",
+        "model_stats_heading": "ประสิทธิภาพและสเปกของโมเดล (ML System Metrics)",
+        "live_sync_heading": "การซิงค์ข้อมูลราคาสดจากหน้าร้านค้า (Live Retail Sync)",
+        "live_sync_sub": "ดึงข้อมูลราคาล่าสุดจากร้านค้าไอทีเพื่ออัปเดตดัชนีฐานข้อมูลให้เป็นปัจจุบัน",
+        "live_sync_btn": "ซิงค์ราคาสดหน้าร้านเดี๋ยวนี้",
         "forecast_heading": "การคาดการณ์แนวโน้มราคาตลาดในอนาคต",
         "forecast_sub": "วิเคราะห์ทิศทางราคาในอีก 1 - 6 เดือนข้างหน้า อ้างอิงจากรอบการผลิตชิปหน่วยความจำในตลาดโลก",
-        "forecast_1m": "อีก 1 เดือน (1 Month)",
-        "forecast_3m": "อีก 3 เดือน (3 Months)",
-        "forecast_6m": "อีก 6 เดือน (6 Months)",
+        "forecast_current_price": "ราคาปัจจุบัน",
+        "forecast_1m": "อีก 1 เดือน",
+        "forecast_3m": "อีก 3 เดือน",
+        "forecast_6m": "อีก 6 เดือน",
         "forecast_chart_title": "เส้นทางทิศทางราคาในอีก 6 เดือนข้างหน้า",
-        "timing_advice_title": "คำแนะนำจังหวะเวลาในการซื้อ:"
+        "timing_advice_title": "คำแนะนำจังหวะเวลาในการจัดซื้อ",
+        "timing_tag": "[PURCHASE ADVISORY]",
+        "model_algo_label": "อัลกอริทึม",
+        "model_algo_val": "Random Forest Regressor (Log-Normal)",
+        "model_r2_label": "ความแม่นยำ (R² Score)",
+        "model_r2_val": "95.33% (Held-out Test)",
+        "model_mae_label": "ความคลาดเคลื่อนเฉลี่ย (MAE)",
+        "model_mae_val": "±1,434 บาท",
+        "model_corpus_label": "ชุดข้อมูลที่ใช้เทรน",
+        "sync_success_msg": "ซิงค์ข้อมูลสำเร็จ! ดึงข้อมูลและตรวจสอบรายการสินค้าแล้ว",
+        "sync_error_msg": "เกิดข้อผิดพลาดในการซิงค์ข้อมูล:"
     },
     "en": {
         "title": "RakaRAM / RAM Price Index",
@@ -526,18 +629,29 @@ TRANSLATIONS = {
         "insights_brand_sub": "Lower THB/GB represents higher capacity per money spent.",
         "insights_speed_heading": "Bus Speed (MHz) vs Price (THB)",
         "insights_speed_sub": "DDR5 offers 4,800 - 8,000 MHz providing significantly higher bandwidth than DDR4.",
-        "pipeline_heading": "Data Pipeline & Valuation Model",
-        "model_stats_heading": "Model Performance (ML Metrics):",
-        "live_sync_heading": "On-Demand Retail Sync:",
-        "live_sync_sub": "Scan live listings from retailers to update the hardware pricing index.",
+        "pipeline_heading": "3. Valuation Model Specs & Retail Sync",
+        "model_stats_heading": "Model Performance & System Architecture",
+        "live_sync_heading": "On-Demand Retail Sync",
+        "live_sync_sub": "Scan live listings from Thai retailers to update the hardware pricing index.",
         "live_sync_btn": "Sync Retail Prices Now",
         "forecast_heading": "Market Future Price Projections",
         "forecast_sub": "Price trajectory forecast for the next 1 - 6 months based on DRAM semiconductor production cycles.",
+        "forecast_current_price": "Current Price",
         "forecast_1m": "In 1 Month",
         "forecast_3m": "In 3 Months",
         "forecast_6m": "In 6 Months",
         "forecast_chart_title": "6-Month Projected Price Curve",
-        "timing_advice_title": "Purchase Timing Guide:"
+        "timing_advice_title": "Procurement Timing Advisory",
+        "timing_tag": "[PURCHASE ADVISORY]",
+        "model_algo_label": "Algorithm",
+        "model_algo_val": "Random Forest Regressor (Log-Normal)",
+        "model_r2_label": "Model Accuracy (R² Score)",
+        "model_r2_val": "95.33% (Held-out Test)",
+        "model_mae_label": "Mean Absolute Error (MAE)",
+        "model_mae_val": "±1,434 THB",
+        "model_corpus_label": "Training Dataset",
+        "sync_success_msg": "Sync complete! Retrieved and verified retailer records.",
+        "sync_error_msg": "Error during sync execution:"
     }
 }
 
@@ -996,21 +1110,19 @@ def main():
     # TAB 3: INSIGHTS & FUTURE FORECASTING
     # =========================================================
     with tab3:
-        st.markdown(f"### {t['tab3']}")
-
         # ---------------- Section 1: Future Price Forecasting ----------------
         st.markdown(f"#### {t['forecast_heading']}")
-        st.write(t['forecast_sub'])
+        st.markdown(f"<p style='color: var(--color-text-muted); font-size: var(--text-sm); margin-bottom: var(--space-4);'>{t['forecast_sub']}</p>", unsafe_allow_html=True)
 
         # Interactive Spec Picker for Forecasting
         f_box_c1, f_box_c2, f_box_c3 = st.columns(3)
         with f_box_c1:
-            fc_gen = st.radio("เลือกรุ่นที่ต้องการดูแนวโน้ม" if lang == "th" else "Select Generation", ["DDR4", "DDR5"], horizontal=True, index=1 if curr_spec.get('gen') == 'DDR5' else 0)
+            fc_gen = st.radio("เลือกรุ่นที่ต้องการดูแนวโน้ม" if lang == "th" else "Select Generation", ["DDR4", "DDR5"], horizontal=True, index=1 if curr_spec.get('gen') == 'DDR5' else 0, key="fc_gen_choice")
         with f_box_c2:
             fc_cap_opts = [8, 16, 32, 64] if fc_gen == "DDR4" else [16, 32, 64, 96]
-            fc_cap = st.selectbox("ความจุที่ต้องการคาดการณ์" if lang == "th" else "Select Capacity", fc_cap_opts, index=1)
+            fc_cap = st.selectbox("ความจุที่ต้องการคาดการณ์" if lang == "th" else "Select Capacity", fc_cap_opts, index=1, key="fc_cap_choice")
         with f_box_c3:
-            fc_brand = st.selectbox("ยี่ห้ออ้างอิง" if lang == "th" else "Reference Brand", ["Kingston", "Corsair", "G.Skill", "ADATA", "Lexar"])
+            fc_brand = st.selectbox("ยี่ห้ออ้างอิง" if lang == "th" else "Reference Brand", ["Kingston", "Corsair", "G.Skill", "ADATA", "Lexar"], key="fc_brand_choice")
 
         # Calculate forecast using the predictor
         if predictor:
@@ -1044,8 +1156,8 @@ def main():
                     "forecast_3m_thb": _p3,
                     "forecast_6m_thb": _p6,
                     "percent_change_6m": round(((_p6 - cur_p) / cur_p) * 100, 1),
-                    "recommendation_th": "🟢 จังหวะดีน่าซื้อตามความต้องการ",
-                    "recommendation_en": "🟢 Good Time to Buy",
+                    "recommendation_th": "จังหวะเหมาะสมในการจัดซื้อหรืออัปเกรด (ราคาทยอยปรับตัวลงอย่างมีเสถียรภาพ)",
+                    "recommendation_en": "Favorable purchase timing (Mainstream DDR5 retail prices are steadily normalizing)",
                     "timeline": [
                         {"period_th": "ปัจจุบัน", "period_en": "Current", "price": cur_p},
                         {"period_th": "อีก 1 เดือน", "period_en": "In 1 Month", "price": _p1},
@@ -1059,20 +1171,58 @@ def main():
             p6 = fc_data.get('forecast_6m_thb', cur_p)
             pct = fc_data.get('percent_change_6m', 0.0)
 
-            # 4 Forecast Metric Cards
+            # 4 Forecast Metric Cards (Akihabara Index Style)
             m_c1, m_c2, m_c3, m_c4 = st.columns(4)
             with m_c1:
-                st.metric("ราคาปัจจุบัน (Now)" if lang == "th" else "Current Price", f"{cur_p:,} {t['currency']}")
-            with m_c2:
-                st.metric(t['forecast_1m'], f"{p1:,} {t['currency']}", f"{p1 - cur_p:+,} {t['currency']}")
-            with m_c3:
-                st.metric(t['forecast_3m'], f"{p3:,} {t['currency']}", f"{p3 - cur_p:+,} {t['currency']}")
-            with m_c4:
-                st.metric(t['forecast_6m'], f"{p6:,} {t['currency']}", f"{p6 - cur_p:+,} {t['currency']} ({pct:+0.1f}%)")
+                st.markdown(f"""
+                <div class="forecast-card">
+                    <div class="forecast-card-label">{t['forecast_current_price']}</div>
+                    <div class="forecast-card-val">{cur_p:,} <span style="font-size: var(--text-xs); font-family: var(--font-sans); color: var(--color-text-muted); font-weight: 400;">{t['currency']}</span></div>
+                    <div class="forecast-card-delta delta-neutral">— BASELINE</div>
+                </div>
+                """, unsafe_allow_html=True)
 
-            # Timing Decision Banner
+            with m_c2:
+                diff_1m = p1 - cur_p
+                cls_1m = "delta-down" if diff_1m < 0 else "delta-up" if diff_1m > 0 else "delta-neutral"
+                st.markdown(f"""
+                <div class="forecast-card">
+                    <div class="forecast-card-label">{t['forecast_1m']}</div>
+                    <div class="forecast-card-val">{p1:,} <span style="font-size: var(--text-xs); font-family: var(--font-sans); color: var(--color-text-muted); font-weight: 400;">{t['currency']}</span></div>
+                    <div class="forecast-card-delta {cls_1m}">{diff_1m:+,} {t['currency']}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with m_c3:
+                diff_3m = p3 - cur_p
+                cls_3m = "delta-down" if diff_3m < 0 else "delta-up" if diff_3m > 0 else "delta-neutral"
+                st.markdown(f"""
+                <div class="forecast-card">
+                    <div class="forecast-card-label">{t['forecast_3m']}</div>
+                    <div class="forecast-card-val">{p3:,} <span style="font-size: var(--text-xs); font-family: var(--font-sans); color: var(--color-text-muted); font-weight: 400;">{t['currency']}</span></div>
+                    <div class="forecast-card-delta {cls_3m}">{diff_3m:+,} {t['currency']}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with m_c4:
+                diff_6m = p6 - cur_p
+                cls_6m = "delta-down" if diff_6m < 0 else "delta-up" if diff_6m > 0 else "delta-neutral"
+                st.markdown(f"""
+                <div class="forecast-card">
+                    <div class="forecast-card-label">{t['forecast_6m']}</div>
+                    <div class="forecast-card-val">{p6:,} <span style="font-size: var(--text-xs); font-family: var(--font-sans); color: var(--color-text-muted); font-weight: 400;">{t['currency']}</span></div>
+                    <div class="forecast-card-delta {cls_6m}">{diff_6m:+,} {t['currency']} ({pct:+0.1f}%)</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # Procurement Timing Advisory Callout
             rec_text = fc_data.get('recommendation_en' if lang == 'en' else 'recommendation_th', '')
-            st.info(f"**{t['timing_advice_title']}** {rec_text}")
+            st.markdown(f"""
+            <div class="advisory-callout">
+                <span class="advisory-tag">{t['timing_tag']}</span>
+                <div class="advisory-body"><strong>{t['timing_advice_title']}:</strong> {rec_text}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
             # Projected Trend Curve Chart
             timeline = fc_data.get('timeline', [])
@@ -1081,54 +1231,58 @@ def main():
                 timeline_df = pd.DataFrame([
                     {
                         "Timeline": item[t_period_key],
-                        f"{fc_brand} {fc_gen} {fc_cap}GB (THB)": item['price']
+                        f"{fc_brand} {fc_gen} {fc_cap}GB": item['price']
                     }
                     for item in timeline
                 ])
-                st.caption(f"{t['forecast_chart_title']}: {fc_brand} {fc_gen} {fc_cap}GB")
-                st.line_chart(timeline_df.set_index("Timeline"), color="#2563eb")
+                st.caption(f"{t['forecast_chart_title']}: {fc_brand} {fc_gen} {fc_cap}GB ({t['currency']})")
+                st.line_chart(timeline_df.set_index("Timeline"), color="#0284C7")
 
-        st.markdown("---")
+        st.markdown("<hr style='border: none; border-top: 1px solid var(--color-border); margin: var(--space-6) 0;'>", unsafe_allow_html=True)
 
         # ---------------- Section 2: Current Market Analytics ----------------
         stat_col1, stat_col2 = st.columns(2)
         with stat_col1:
-            st.markdown(f"##### {t['insights_brand_heading']}")
+            st.markdown(f"#### {t['insights_brand_heading']}")
+            st.markdown(f"<p style='font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-2);'>{t['insights_brand_sub']}</p>", unsafe_allow_html=True)
             top_brand_names = df['brand'].value_counts().head(7).index
             brand_val = df[df['brand'].isin(top_brand_names)].groupby('brand')['price_per_gb'].median().sort_values()
-            st.bar_chart(brand_val, color="#10b981")
-            st.caption(t['insights_brand_sub'])
+            st.bar_chart(brand_val, color="#0284C7")
 
         with stat_col2:
-            st.markdown(f"##### {t['insights_speed_heading']}")
+            st.markdown(f"#### {t['insights_speed_heading']}")
+            st.markdown(f"<p style='font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-2);'>{t['insights_speed_sub']}</p>", unsafe_allow_html=True)
             st.scatter_chart(df, x='speed_mhz', y='price_thb', color='generation')
-            st.caption(t['insights_speed_sub'])
 
-        st.markdown("---")
+        st.markdown("<hr style='border: none; border-top: 1px solid var(--color-border); margin: var(--space-6) 0;'>", unsafe_allow_html=True)
 
-        # ---------------- Section 3: AI Model & Live Sync ----------------
-        st.markdown(f"### {t['pipeline_heading']}")
+        # ---------------- Section 3: AI Model Specs & Retail Live Sync ----------------
+        st.markdown(f"#### {t['pipeline_heading']}")
         
         info_c1, info_c2 = st.columns([1, 1])
         with info_c1:
-            st.markdown(f"##### {t['model_stats_heading']}")
-            st.write("- **Algorithm**: `Random Forest Regressor` with `Log-Normal Transformation`")
-            st.write("- **Model Accuracy ($R^2$ Score)**: `95.3%` on Held-out Test Set")
-            st.write("- **Mean Absolute Error (MAE)**: `±1,434 THB`")
-            st.write(f"- **Trained On**: `{len(df)} live retail listings in Thailand`")
+            st.markdown(f"<div style='font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2);'>{t['model_stats_heading']}</div>", unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class="tech-spec-box">
+                <div class="tech-spec-row"><span class="tech-spec-label">{t['model_algo_label']}:</span> <span class="tech-spec-val">{t['model_algo_val']}</span></div>
+                <div class="tech-spec-row"><span class="tech-spec-label">{t['model_r2_label']}:</span> <span class="tech-spec-val">{t['model_r2_val']}</span></div>
+                <div class="tech-spec-row"><span class="tech-spec-label">{t['model_mae_label']}:</span> <span class="tech-spec-val">{t['model_mae_val']}</span></div>
+                <div class="tech-spec-row"><span class="tech-spec-label">{t['model_corpus_label']}:</span> <span class="tech-spec-val">{len(df)} {"รายการจริง (JIB Thailand)" if lang == "th" else "records (JIB Thailand)"}</span></div>
+            </div>
+            """, unsafe_allow_html=True)
 
         with info_c2:
-            st.markdown(f"##### {t['live_sync_heading']}")
-            st.write(t['live_sync_sub'])
-            if st.button(t['live_sync_btn'], use_container_width=True):
+            st.markdown(f"<div style='font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2);'>{t['live_sync_heading']}</div>", unsafe_allow_html=True)
+            st.markdown(f"<p style='font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-3);'>{t['live_sync_sub']}</p>", unsafe_allow_html=True)
+            if st.button(t['live_sync_btn'], use_container_width=True, key="btn_live_sync"):
                 with st.spinner("Connecting to retailers and updating live dataset..."):
                     try:
                         new_data = run_data_pipeline(save_raw=True)
-                        st.success(f"Sync complete! Retrieved {len(new_data)} verified products.")
+                        st.success(f"{t['sync_success_msg']} ({len(new_data)} items)")
                         st.cache_data.clear()
                         st.rerun()
                     except Exception as e:
-                        st.error(f"Error during live sync: {e}")
+                        st.error(f"{t['sync_error_msg']} {e}")
 
 if __name__ == "__main__":
     main()
