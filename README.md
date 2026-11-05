@@ -87,7 +87,17 @@ streamlit run app/app.py
 
 ---
 
-### 3. รันคำนวณราคาผ่าน CLI (Real-time Prediction CLI)
+### 3. รัน Serverless REST API (FastAPI)
+```powershell
+python main.py
+# หรือใช้ uvicorn โดยตรง
+uvicorn main:app --reload --port 8000
+```
+เปิดเอกสาร Swagger API ได้ที่ `http://localhost:8000/docs` เพื่อทดสอบทำนายราคาผ่าน RESTful API (พร้อมรองรับการ Deploy สู่ Vercel / Cloud Run ผ่าน `vercel.json`)
+
+---
+
+### 4. รันคำนวณราคาผ่าน CLI (Real-time Prediction CLI)
 ```powershell
 # ตัวอย่าง: ทำนายราคา Kingston DDR5 32GB (2x16GB) 6000MHz CL36 RGB
 python -m src.models.predict --brand Kingston --gen DDR5 --capacity 32 --speed 6000 --modules 2 --cl 36 --rgb 1
