@@ -16,308 +16,468 @@ from src.scraper.run_pipeline import run_data_pipeline
 
 # Page Configuration
 st.set_page_config(
-    page_title="RakaRAM | เช็กราคาและประเมินราคาแรมคอมพิวเตอร์",
-    page_icon="⚡",
+    page_title="RakaRAM | ดัชนีราคาแรมและระบบประเมินราคากลาง",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Modern E-Commerce UI Styling (Clean Light Theme with Navy Accents)
+# Design Tokens: "Akihabara Index" (Japanese Contemporary Hardware Index)
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
     
-    html, body, [class*="css"] {
-        font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+    :root {
+        --color-canvas:       #FFFFFF;
+        --color-surface:      #F1F5F9;
+        --color-border:       #CBD5E1;
+        --color-text-main:    #0F172A;
+        --color-text-muted:   #475569;
+        --color-accent:       #0284C7;
+        --color-accent-hover: #0369A1;
+        --color-accent-soft:  #E0F2FE;
+        --color-success:      #16A34A;
+        --color-warning:      #D97706;
+        --color-disabled:     #94A3B8;
+
+        --font-sans:          'Noto Sans Thai', -apple-system, sans-serif;
+        --font-mono:          'Space Grotesk', monospace;
+
+        --text-xs:            12px;
+        --text-sm:            14px;
+        --text-base:          16px;
+        --text-lg:            18px;
+        --text-xl:            22px;
+        --text-hero:          36px;
+
+        --space-1:            4px;
+        --space-2:            8px;
+        --space-3:            12px;
+        --space-4:            16px;
+        --space-6:            24px;
+        --space-8:            32px;
+
+        --radius:             2px;
+        --target-min-size:    44px;
     }
-    
-    /* Top Header Bar */
-    .top-navbar {
-        background: #ffffff;
-        border-bottom: 1px solid #e2e8f0;
-        padding: 0.8rem 1.5rem;
+
+    html, body, [class*="css"] {
+        font-family: var(--font-sans);
+        color: var(--color-text-main);
+        background-color: var(--color-canvas);
+    }
+
+    /* Streamlit base override */
+    .stApp {
+        background-color: var(--color-canvas);
+    }
+
+    /* Global Header */
+    .brand-header {
+        border-bottom: 1px solid var(--color-border);
+        padding: var(--space-4) 0;
+        margin-bottom: var(--space-6);
+    }
+    .brand-title {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--color-text-main);
+        margin: 0;
+        line-height: 1.2;
+    }
+    .brand-subtitle {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        margin-top: var(--space-1);
+    }
+
+    /* Primary Buttons & Interactive Controls (44px min height) */
+    .stButton > button {
+        min-height: var(--target-min-size) !important;
+        border-radius: var(--radius) !important;
+        font-family: var(--font-sans) !important;
+        font-size: var(--text-sm) !important;
+        font-weight: 500 !important;
+        border: 1px solid var(--color-border) !important;
+        box-shadow: none !important;
+        transition: background-color 0.15s ease, border-color 0.15s ease !important;
+    }
+    .stButton > button[kind="primary"] {
+        background-color: var(--color-accent) !important;
+        border-color: var(--color-accent) !important;
+        color: #FFFFFF !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background-color: var(--color-accent-hover) !important;
+        border-color: var(--color-accent-hover) !important;
+    }
+    .stButton > button[kind="secondary"] {
+        background-color: var(--color-canvas) !important;
+        color: var(--color-text-main) !important;
+    }
+    .stButton > button[kind="secondary"]:hover {
+        background-color: var(--color-surface) !important;
+        border-color: var(--color-text-muted) !important;
+    }
+
+    /* Input Fields & Selectboxes */
+    .stSelectbox div[data-baseweb="select"] > div,
+    .stTextInput > div > div > input {
+        min-height: var(--target-min-size) !important;
+        border-radius: var(--radius) !important;
+        border-color: var(--color-border) !important;
+        font-family: var(--font-sans) !important;
+        font-size: var(--text-sm) !important;
+        box-shadow: none !important;
+    }
+    .stSelectbox div[data-baseweb="select"]:focus-within {
+        border-color: var(--color-accent) !important;
+    }
+
+    /* Hero Price Result (Single Dominant Element) */
+    .hero-price-panel {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: var(--space-6);
+        text-align: center;
+        margin: var(--space-4) 0;
+    }
+    .hero-price-label {
+        font-size: var(--text-xs);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+    }
+    .hero-price-value {
+        font-family: var(--font-mono);
+        font-size: var(--text-hero);
+        font-weight: 700;
+        color: var(--color-text-main);
+        margin: var(--space-2) 0;
+        line-height: 1.1;
+    }
+    .hero-price-range {
+        display: inline-block;
+        background-color: var(--color-accent-soft);
+        color: var(--color-accent-hover);
+        border: 1px solid #BAE6FD;
+        border-radius: var(--radius);
+        padding: var(--space-1) var(--space-3);
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: 600;
+    }
+
+    /* Preset Selection Table/Row */
+    .preset-row {
+        background-color: var(--color-canvas);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: var(--space-3) var(--space-4);
+        margin-bottom: var(--space-2);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 120px;
+    }
+    .preset-badge {
+        display: inline-block;
+        font-size: var(--text-xs);
+        font-family: var(--font-mono);
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: var(--radius);
+        border: 1px solid var(--color-border);
+        background-color: var(--color-surface);
+        color: var(--color-text-muted);
+        width: fit-content;
+        margin-bottom: var(--space-1);
+    }
+    .preset-title {
+        font-size: var(--text-sm);
+        font-weight: 600;
+        color: var(--color-text-main);
+        margin: 0;
+    }
+    .preset-desc {
+        font-size: var(--text-xs);
+        font-family: var(--font-mono);
+        color: var(--color-text-muted);
+        margin-top: var(--space-1);
+    }
+
+    /* Spec Advice Block */
+    .advice-item {
+        border-left: 2px solid var(--color-accent);
+        padding-left: var(--space-3);
+        margin-bottom: var(--space-3);
+        font-size: var(--text-sm);
+        line-height: 1.5;
+        color: var(--color-text-main);
+    }
+
+    /* Real Product Store Row */
+    .store-product-row {
+        background-color: var(--color-canvas);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: var(--space-3) var(--space-4);
+        margin-bottom: var(--space-2);
+    }
+    .store-product-title {
+        font-size: var(--text-sm);
+        font-weight: 500;
+        color: var(--color-text-main);
+        line-height: 1.4;
+    }
+    .store-product-meta {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-radius: 0.8rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        margin-top: var(--space-2);
     }
-    
-    /* Hero Banner */
-    .hero-banner {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #1e3a8a 100%);
-        padding: 2rem 2.2rem;
-        border-radius: 1.2rem;
-        color: white;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
-    }
-    .hero-title {
-        font-size: 2.2rem;
+    .store-product-price {
+        font-family: var(--font-mono);
+        font-size: var(--text-base);
         font-weight: 700;
-        letter-spacing: -0.02em;
-        margin-bottom: 0.3rem;
-        display: flex;
+        color: var(--color-accent);
+    }
+    .store-product-unit {
+        font-size: var(--text-xs);
+        font-family: var(--font-mono);
+        color: var(--color-text-muted);
+        margin-left: var(--space-1);
+    }
+    .store-link-btn {
+        display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-    }
-    .hero-subtitle {
-        font-size: 1.05rem;
-        color: #94a3b8;
-        font-weight: 300;
-        max-width: 850px;
-        line-height: 1.5;
-    }
-
-    /* Price Result Box (E-Commerce Highlight) */
-    .price-highlight-box {
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-        padding: 1.8rem 2rem;
-        border-radius: 1.2rem;
-        color: white;
-        text-align: center;
-        box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.35);
-        margin: 1.2rem 0;
-    }
-    .price-label {
-        font-size: 1rem;
-        font-weight: 400;
-        opacity: 0.95;
-        letter-spacing: 0.04em;
-    }
-    .price-value {
-        font-size: 3.5rem;
-        font-weight: 800;
-        line-height: 1.1;
-        margin: 0.3rem 0;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    }
-    .price-range-badge {
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(8px);
-        padding: 0.35rem 1.2rem;
-        border-radius: 2rem;
-        font-size: 1.05rem;
+        justify-content: center;
+        min-height: var(--target-min-size);
+        padding: 0 var(--space-4);
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-main);
+        font-size: var(--text-xs);
         font-weight: 500;
-        margin-top: 0.3rem;
+        text-decoration: none;
+        border-radius: var(--radius);
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+        box-sizing: border-box;
+    }
+    .store-link-btn:hover {
+        background-color: var(--color-accent-soft);
+        border-color: var(--color-accent);
+        color: var(--color-accent-hover);
+        text-decoration: none;
     }
 
-    /* Product Real Card */
-    .shop-product-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.8rem;
-        padding: 1rem 1.2rem;
-        margin-bottom: 0.8rem;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    /* Tabs Styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: var(--space-2);
+        border-bottom: 1px solid var(--color-border);
     }
-    .shop-product-card:hover {
-        border-color: #3b82f6;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+    .stTabs [data-baseweb="tab"] {
+        height: var(--target-min-size) !important;
+        font-family: var(--font-sans) !important;
+        font-size: var(--text-sm) !important;
+        font-weight: 500 !important;
+        border-radius: var(--radius) var(--radius) 0 0 !important;
+        padding: 0 var(--space-4) !important;
+        color: var(--color-text-muted) !important;
     }
-    .badge-tag {
-        display: inline-block;
-        padding: 0.2rem 0.65rem;
-        border-radius: 0.4rem;
-        font-size: 0.78rem;
-        font-weight: 600;
+    .stTabs [aria-selected="true"] {
+        color: var(--color-accent) !important;
+        border-bottom: 2px solid var(--color-accent) !important;
+        font-weight: 600 !important;
     }
-    .badge-budget { background: #dcfce7; color: #166534; }
-    .badge-mainstream { background: #dbeafe; color: #1e40af; }
-    .badge-performance { background: #fef3c7; color: #92400e; }
-    .badge-workstation { background: #f3e8ff; color: #6b21a8; }
 </style>
 """, unsafe_allow_html=True)
 
 DATASET_PATH = str(ROOT_DIR / "data" / "processed" / "ram_dataset_real.csv")
 METADATA_PATH = str(ROOT_DIR / "saved_models" / "model_metadata.json")
 
-# Bilingual Dictionary (TH / EN)
+# Bilingual Dictionary: Akihabara Index Style (Zero Slop / Functional)
 TRANSLATIONS = {
     "th": {
-        "title": "⚡ RakaRAM (ราคาแรม)",
-        "subtitle": "ระบบเช็กราคากลางและประเมินราคาแรมคอมพิวเตอร์และโน้ตบุ๊ก ด้วย AI อ้างอิงจากราคาขายจริงในร้านค้าไอทีไทยแบบ Real-time",
-        "tab1": "🔮 1. ประเมินราคาแรม (Price Estimator)",
-        "tab2": "🛒 2. คลังราคาสินค้าจริง (Market Catalog)",
-        "tab3": "📊 3. กราฟตลาด & คาดการณ์ราคาในอนาคต (Trends & Forecast)",
-        "method1_heading": "🎯 วิธีที่ 1: เลือกสเปกยอดนิยม (คลิกเดียวรู้ราคา)",
-        "method1_sub": "หากคุณไม่แน่ใจเรื่องสเปก สามารถคลิกเลือกชุดสเปกที่แนะนำด้านล่าง ระบบจะคำนวณราคาประเมินให้ทันทีครับ:",
-        "select_this_preset": "เลือกชุดนี้ 👉",
-        "method2_heading": "⚙️ วิธีที่ 2: ปรับแต่งสเปกเอง (3 ขั้นตอนง่ายๆ)",
-        "step1_title": "1. ประเภทและรุ่น (Type & Gen)",
+        "title": "RakaRAM / ดัชนีราคาแรม",
+        "subtitle": "ระบบประเมินราคากลางและค้นหาสเปกหน่วยความจำคอมพิวเตอร์ในไทย",
+        "tab1": "1. ประเมินราคากลาง (Price Estimator)",
+        "tab2": "2. รายการราคาหน้าร้าน (Retail Index)",
+        "tab3": "3. สถิติและแนวโน้มตลาด (Market Trends)",
+        "method1_heading": "วิธีที่ 1: เลือกสเปกอ้างอิงมาตรฐาน",
+        "method1_sub": "คลิกเลือกชุดสเปกที่ผ่านการคำนวณราคากลางแล้ว เพื่อดูมูลค่าตลาดทันที:",
+        "select_this_preset": "เลือกสเปกนี้",
+        "method2_heading": "วิธีที่ 2: ระบุสเปกที่ต้องการประเมิน",
+        "step1_title": "1. รูปแบบและรุ่น (Form Factor & Gen)",
         "device_type": "ประเภทอุปกรณ์",
-        "desktop_option": "UDIMM (สำหรับ Desktop PC ทั่วไป)",
+        "desktop_option": "UDIMM (สำหรับ Desktop PC)",
         "laptop_option": "SO-DIMM (สำหรับ Laptop / โน้ตบุ๊ก)",
-        "gen_label": "รุ่น DDR (Generation)",
+        "gen_label": "รุ่นหน่วยความจำ (Generation)",
         "gen_help": "DDR4 เหมาะกับคอมที่เน้นประหยัดหรือเครื่องเดิม, DDR5 เหมาะกับคอมรุ่นใหม่ล่าสุด (Intel Gen 12-14+, AMD Ryzen 7000+)",
         "step2_title": "2. ความจุและยี่ห้อ (Capacity & Brand)",
         "capacity_label": "ความจุรวม (GB)",
-        "cap_popular": "(ยอดนิยม เล่นเกมลื่นไหล)",
+        "cap_popular": "(ขนาดมาตรฐาน)",
         "brand_label": "ยี่ห้อ (Brand)",
-        "step3_title": "3. ลูกเล่นและจำนวนแถว",
+        "step3_title": "3. แถวและไฟแสดงผล (Modules & RGB)",
         "modules_label": "จำนวนแถวแรม (Modules)",
         "modules_dual_recommend": "แนะนำ 2 แถวเพื่อเปิดระบบ Dual-Channel",
-        "rgb_toggle": "🌈 มีไฟ RGB สวยงาม",
-        "advanced_expander": "🛠️ สเปกขั้นสูง (บัสสปีด & ค่าความหน่วง CL) - หากไม่แน่ใจให้ใช้ค่าเริ่มต้นได้เลย",
+        "rgb_toggle": "ไฟแสดงผล RGB",
+        "advanced_expander": "สเปกขั้นสูง (บัสสปีด & ค่าความหน่วง CL)",
         "speed_label": "ความเร็วบัส (Speed MHz)",
-        "cl_label": "ค่า CAS Latency (CL - ยิ่งน้อยยิ่งตอบสนองไว)",
-        "calculate_btn": "🚀 คำนวณราคาประเมินทันที",
-        "fair_price_title": "ราคาประเมินที่เหมาะสมในตลาดไทย (Fair Market Value)",
+        "cl_label": "ค่า CAS Latency (CL)",
+        "calculate_btn": "คำนวณราคาประเมิน",
+        "fair_price_title": "ราคากลางประเมิน (Fair Market Value)",
         "fair_range_label": "ช่วงราคาที่สมเหตุสมผล:",
         "currency": "บาท",
-        "buyer_advice_heading": "💡 คำแนะนำสำหรับการเลือกซื้อสเปกนี้",
-        "matching_store_heading": "🛍️ สินค้าจริงในตลาดที่มีสเปกตรง/ใกล้เคียงที่สุด",
-        "view_store_btn": "ดูสินค้าร้าน JIB ↗",
-        "no_direct_match": "ขณะนี้ยังไม่มีสินค้าตรงกับความจุนี้ในสต็อก แต่โมเดลสามารถประเมินราคาที่สมเหตุสมผลให้ได้ตามสถิติของตลาดครับ",
-        "catalog_heading": "🔍 ค้นหาและเปรียบเทียบราคาสินค้าจริงจากร้านค้าไอที",
-        "catalog_sub": "ดูราคาจริงของแรมทุกรุ่นที่มีการจำหน่ายในสต็อกปัจจุบัน สามารถค้นหาและกรองได้ง่ายๆ:",
-        "search_label": "🔎 พิมพ์ค้นหาตามชื่อรุ่น หรือ ยี่ห้อ",
-        "search_placeholder": "เช่น Kingston, Corsair, RGB, 32GB...",
-        "filter_gen_label": "เลือกรุ่น DDR",
+        "buyer_advice_heading": "ข้อสังเกตเชิงเทคนิค (Technical Evaluation)",
+        "matching_store_heading": "รายการสินค้าจริงในสต็อก (Live Store Matching)",
+        "view_store_btn": "ดูหน้าร้าน JIB",
+        "no_direct_match": "ขณะนี้ยังไม่มีสินค้าตรงกับความจุนี้ในสต็อก แต่โมเดลสามารถประเมินราคาที่สมเหตุสมผลให้ได้ตามสถิติของตลาด",
+        "catalog_heading": "รายการราคาสินค้าจริงจากร้านค้าไอที",
+        "catalog_sub": "ค้นหาและเปรียบเทียบราคาแรมจากร้านค้าไอทีในไทยแบบรายชิ้น:",
+        "search_label": "ค้นหาตามชื่อรุ่น หรือ ยี่ห้อ",
+        "search_placeholder": "พิมพ์ชื่อรุ่น เช่น Kingston, Corsair, 32GB...",
+        "filter_gen_label": "กรองตามรุ่น DDR",
         "filter_all": "ทั้งหมด",
-        "filter_ddr4": "เฉพาะ DDR4",
-        "filter_ddr5": "เฉพาะ DDR5",
-        "sort_label": "เรียงลำดับตาม",
-        "sort_price_asc": "ราคา: น้อยไปมาก",
-        "sort_price_desc": "ราคา: มากไปน้อย",
+        "filter_ddr4": "DDR4",
+        "filter_ddr5": "DDR5",
+        "sort_label": "เรียงลำดับ",
+        "sort_price_asc": "ราคา: ต่ำไปสูง",
+        "sort_price_desc": "ราคา: สูงไปต่ำ",
         "sort_val_asc": "ความคุ้มค่า (฿/GB ต่ำสุด)",
-        "items_found": "พบรายการแรมทั้งหมด",
-        "insights_brand_heading": "🏆 แบรนด์ไหนคุ้มค่าที่สุด? (เปรียบเทียบราคาเฉลี่ยต่อ GB)",
-        "insights_brand_sub": "ยิ่งค่า ฿/GB ต่ำ แสดงว่ายิ่งได้ความจุต่อเม็ดเงินที่จ่ายไปคุ้มค่าที่สุด",
-        "insights_speed_heading": "⚡ ความเร็วบัส (MHz) กับระดับราคา (บาท)",
-        "insights_speed_sub": "DDR5 จะมีความเร็วบัสเริ่มต้นที่ 4,800 - 8,000 MHz ให้แบนด์วิดท์สูงกว่า DDR4 อย่างมีนัยสำคัญ",
-        "pipeline_heading": "🔄 ระบบดึงข้อมูลสดและ Machine Learning",
-        "model_stats_heading": "🤖 ประสิทธิภาพโมเดลทำนายราคา:",
-        "live_sync_heading": "🌐 ซิงค์ราคาตลาดสดใหม่ (On-Demand Live Sync):",
-        "live_sync_sub": "ระบบจะสั่งรัน Web Scraper ไปยังร้านค้าเพื่อสแกนราคารุ่นแรมล่าสุดและสกัดสเปกใหม่ทันที",
-        "live_sync_btn": "🔄 ซิงค์ข้อมูลราคาสดเดี๋ยวนี้",
-        "forecast_heading": "🔮 การคาดการณ์แนวโน้มราคาในอนาคต (Future Price Forecasting)",
-        "forecast_sub": "ระบบวิเคราะห์แนวโน้มราคาในอีก 1 - 6 เดือนข้างหน้า อ้างอิงจากรอบการผลิตและปริมาณชิปหน่วยความจำในตลาดโลก",
-        "forecast_1m": "อีก 1 เดือน (In 1 Mo)",
-        "forecast_3m": "อีก 3 เดือน (In 3 Mos)",
-        "forecast_6m": "อีก 6 เดือน (In 6 Mos)",
-        "forecast_chart_title": "📈 เส้นทางทิศทางราคาในอีก 6 เดือนข้างหน้า (Price Forecast Curve)",
-        "timing_advice_title": "🎯 จังหวะเวลาในการซื้อ:"
+        "items_found": "จำนวนรายการที่พบ",
+        "insights_brand_heading": "เปรียบเทียบราคาเฉลี่ยต่อ GB แยกตามยี่ห้อ",
+        "insights_brand_sub": "ค่า ฿/GB ต่ำ หมายถึงความจุต่อเม็ดเงินที่คุ้มค่ากว่า",
+        "insights_speed_heading": "ความเร็วบัส (MHz) กับระดับราคา (บาท)",
+        "insights_speed_sub": "DDR5 มีความเร็วบัส 4,800 - 8,000 MHz ให้แบนด์วิดท์สูงกว่า DDR4 อย่างมีนัยสำคัญ",
+        "pipeline_heading": "ระบบดึงข้อมูลและโมเดลประเมินราคา",
+        "model_stats_heading": "ประสิทธิภาพโมเดลประเมินราคา (ML Metrics):",
+        "live_sync_heading": "ซิงค์ราคาสดจากหน้าร้านค้า (Live Sync):",
+        "live_sync_sub": "รันสคริปต์ดึงข้อมูลล่าสุดจากร้านค้าไอทีเพื่ออัปเดตฐานข้อมูล",
+        "live_sync_btn": "ซิงค์ข้อมูลราคาเดี๋ยวนี้",
+        "forecast_heading": "การคาดการณ์แนวโน้มราคาตลาดในอนาคต",
+        "forecast_sub": "วิเคราะห์ทิศทางราคาในอีก 1 - 6 เดือนข้างหน้า อ้างอิงจากรอบการผลิตชิปหน่วยความจำในตลาดโลก",
+        "forecast_1m": "อีก 1 เดือน (1 Month)",
+        "forecast_3m": "อีก 3 เดือน (3 Months)",
+        "forecast_6m": "อีก 6 เดือน (6 Months)",
+        "forecast_chart_title": "เส้นทางทิศทางราคาในอีก 6 เดือนข้างหน้า",
+        "timing_advice_title": "คำแนะนำจังหวะเวลาในการซื้อ:"
     },
     "en": {
-        "title": "⚡ RakaRAM (RAM Price Estimator)",
-        "subtitle": "Fair market price estimator & hardware catalog for desktop & laptop RAM powered by AI using live Thai retailer market prices.",
-        "tab1": "🔮 1. Price Estimator",
-        "tab2": "🛒 2. Live Market Catalog",
-        "tab3": "📊 3. Market Trends & Future Forecasts",
-        "method1_heading": "🎯 Method 1: Popular Spec Presets (1-Click Price)",
-        "method1_sub": "If you are not sure about specs, click any preset below to calculate the fair market price instantly:",
-        "select_this_preset": "Select This 👉",
-        "method2_heading": "⚙️ Method 2: Custom Spec (3 Easy Steps)",
-        "step1_title": "1. Device & Generation",
+        "title": "RakaRAM / RAM Price Index",
+        "subtitle": "Hardware valuation engine & real-time retail price index in Thailand",
+        "tab1": "1. Valuation Engine",
+        "tab2": "2. Retail Catalog",
+        "tab3": "3. Market Trends & Projections",
+        "method1_heading": "Method 1: Standard Reference Configurations",
+        "method1_sub": "Select standard configurations for immediate fair market valuation:",
+        "select_this_preset": "Select Spec",
+        "method2_heading": "Method 2: Custom Specification",
+        "step1_title": "1. Form Factor & Generation",
         "device_type": "Device Type",
-        "desktop_option": "UDIMM (For Desktop PC)",
-        "laptop_option": "SO-DIMM (For Laptop / Mini-PC)",
+        "desktop_option": "UDIMM (Desktop PC)",
+        "laptop_option": "SO-DIMM (Laptop / Mini-PC)",
         "gen_label": "Memory Generation (DDR)",
         "gen_help": "DDR4 is budget-friendly for older builds; DDR5 is for modern platforms (Intel Gen 12-14+, AMD Ryzen 7000+)",
         "step2_title": "2. Capacity & Brand",
         "capacity_label": "Total Capacity (GB)",
-        "cap_popular": "(Popular - Smooth gaming)",
+        "cap_popular": "(Standard Size)",
         "brand_label": "Brand",
-        "step3_title": "3. Modules & Aesthetics",
+        "step3_title": "3. Modules & RGB",
         "modules_label": "Memory Modules (Sticks)",
-        "modules_dual_recommend": "Recommended 2 sticks for Dual-Channel speed",
-        "rgb_toggle": "🌈 RGB Lighting",
-        "advanced_expander": "🛠️ Advanced Specs (Speed MHz & CL Latency) - Default values recommended",
+        "modules_dual_recommend": "2 sticks recommended for Dual-Channel",
+        "rgb_toggle": "RGB Lighting",
+        "advanced_expander": "Advanced Specs (Bus Speed & CAS Latency)",
         "speed_label": "Bus Speed (MHz)",
-        "cl_label": "CAS Latency (CL - Lower is faster)",
-        "calculate_btn": "🚀 Calculate Fair Price Now",
-        "fair_price_title": "Fair Market Value (Estimated Thailand Retail Price)",
-        "fair_range_label": "Reasonable Price Range:",
+        "cl_label": "CAS Latency (CL)",
+        "calculate_btn": "Evaluate Market Price",
+        "fair_price_title": "Fair Market Value",
+        "fair_range_label": "Fair Range:",
         "currency": "THB",
-        "buyer_advice_heading": "💡 Buyer's Advice for This Specification",
-        "matching_store_heading": "🛍️ Matching Live Store Products at JIB",
-        "view_store_btn": "View at JIB Store ↗",
-        "no_direct_match": "No identical item in stock currently, but AI estimated fair value accurately based on overall market trends.",
-        "catalog_heading": "🔍 Search & Compare Real Store Prices",
-        "catalog_sub": "Browse live retail RAM prices from top shops, filter, and compare with ease:",
-        "search_label": "🔎 Search by model or brand",
-        "search_placeholder": "e.g., Kingston, Corsair, RGB, 32GB...",
+        "buyer_advice_heading": "Technical Evaluation",
+        "matching_store_heading": "Matching Retail Stock (JIB)",
+        "view_store_btn": "View Store",
+        "no_direct_match": "No identical item in stock currently, but AI estimated fair value based on overall market trends.",
+        "catalog_heading": "Retail Price Index",
+        "catalog_sub": "Browse and compare individual RAM retail listings in Thailand:",
+        "search_label": "Search by model or brand",
+        "search_placeholder": "e.g., Kingston, Corsair, 32GB...",
         "filter_gen_label": "Filter Generation",
         "filter_all": "All",
-        "filter_ddr4": "Only DDR4",
-        "filter_ddr5": "Only DDR5",
+        "filter_ddr4": "DDR4",
+        "filter_ddr5": "DDR5",
         "sort_label": "Sort by",
         "sort_price_asc": "Price: Low to High",
         "sort_price_desc": "Price: High to Low",
-        "sort_val_asc": "Best Value (Lowest ฿/GB)",
-        "items_found": "Total RAM products found",
-        "insights_brand_heading": "🏆 Best Value Brands (Median Price per GB)",
-        "insights_brand_sub": "Lower THB/GB means you get more memory capacity per money spent.",
-        "insights_speed_heading": "⚡ Bus Speed (MHz) vs Price (THB)",
-        "insights_speed_sub": "DDR5 offers 4,800 - 8,000 MHz providing significantly higher memory bandwidth than DDR4.",
-        "pipeline_heading": "🔄 Live Data Pipeline & AI Model",
-        "model_stats_heading": "🤖 Machine Learning Performance:",
-        "live_sync_heading": "🌐 On-Demand Live Market Sync:",
-        "live_sync_sub": "Trigger the web scraper to scan live listings from retailers and re-parse hardware specifications.",
-        "live_sync_btn": "🔄 Sync Live Retail Prices Now",
-        "forecast_heading": "🔮 Future Price Trend Forecast (6-Month Projection)",
-        "forecast_sub": "Price trajectory forecast for the next 1 - 6 months based on DRAM semiconductor production cycles and adoption curves.",
+        "sort_val_asc": "Value (Lowest ฿/GB)",
+        "items_found": "Total items found",
+        "insights_brand_heading": "Median Price per GB by Brand",
+        "insights_brand_sub": "Lower THB/GB represents higher capacity per money spent.",
+        "insights_speed_heading": "Bus Speed (MHz) vs Price (THB)",
+        "insights_speed_sub": "DDR5 offers 4,800 - 8,000 MHz providing significantly higher bandwidth than DDR4.",
+        "pipeline_heading": "Data Pipeline & Valuation Model",
+        "model_stats_heading": "Model Performance (ML Metrics):",
+        "live_sync_heading": "On-Demand Retail Sync:",
+        "live_sync_sub": "Scan live listings from retailers to update the hardware pricing index.",
+        "live_sync_btn": "Sync Retail Prices Now",
+        "forecast_heading": "Market Future Price Projections",
+        "forecast_sub": "Price trajectory forecast for the next 1 - 6 months based on DRAM semiconductor production cycles.",
         "forecast_1m": "In 1 Month",
         "forecast_3m": "In 3 Months",
         "forecast_6m": "In 6 Months",
-        "forecast_chart_title": "📈 6-Month Projected Price Curve",
-        "timing_advice_title": "🎯 Purchasing Timing Guide:"
+        "forecast_chart_title": "6-Month Projected Price Curve",
+        "timing_advice_title": "Purchase Timing Guide:"
     }
 }
 
-# Presets for everyday users (Bilingual)
+# Standard Reference Presets (Anti-slop / Functional)
 PRESETS = [
     {
         "id": "budget_gaming",
-        "title_th": "🎮 สายเล่นเกมคุ้มค่า (ยอดนิยม)",
-        "title_en": "🎮 Budget Gaming (Most Popular)",
-        "desc": "16GB (8GBx2) DDR4 3200MHz Non-RGB",
-        "tag_th": "งบประหยัด",
-        "tag_en": "Budget Value",
-        "badge": "badge-budget",
+        "title_th": "DDR4 16GB (8GBx2) 3200MHz",
+        "title_en": "DDR4 16GB (8GBx2) 3200MHz",
+        "desc": "CL16 / Non-RGB / UDIMM",
+        "tag_th": "BUDGET",
+        "tag_en": "BUDGET",
         "spec": {"brand": "Kingston", "gen": "DDR4", "cap": 16, "modules": 2, "speed": 3200, "cl": 16, "rgb": 0, "form": "UDIMM"}
     },
     {
         "id": "mainstream_rgb",
-        "title_th": "✨ สายเกมมิ่ง + มีไฟ RGB",
-        "title_en": "✨ Gaming Rig with RGB",
-        "desc": "16GB (8GBx2) DDR4 3200MHz RGB",
-        "tag_th": "สวยงามคุ้มราคา",
-        "tag_en": "RGB Aesthetics",
-        "badge": "badge-mainstream",
+        "title_th": "DDR4 16GB (8GBx2) 3200MHz RGB",
+        "title_en": "DDR4 16GB (8GBx2) 3200MHz RGB",
+        "desc": "CL16 / RGB / UDIMM",
+        "tag_th": "MAINSTREAM",
+        "tag_en": "MAINSTREAM",
         "spec": {"brand": "Corsair", "gen": "DDR4", "cap": 16, "modules": 2, "speed": 3200, "cl": 16, "rgb": 1, "form": "UDIMM"}
     },
     {
         "id": "ddr5_sweet_spot",
-        "title_th": "🚀 สายประกอบคอมใหม่ DDR5",
-        "title_en": "🚀 Next-Gen DDR5 Sweet Spot",
-        "desc": "32GB (16GBx2) DDR5 6000MHz RGB",
-        "tag_th": "มาตรฐานยุคใหม่",
-        "tag_en": "Next-Gen Standard",
-        "badge": "badge-performance",
+        "title_th": "DDR5 32GB (16GBx2) 6000MHz",
+        "title_en": "DDR5 32GB (16GBx2) 6000MHz",
+        "desc": "CL36 / RGB / UDIMM",
+        "tag_th": "PERFORMANCE",
+        "tag_en": "PERFORMANCE",
         "spec": {"brand": "Kingston", "gen": "DDR5", "cap": 32, "modules": 2, "speed": 6000, "cl": 36, "rgb": 1, "form": "UDIMM"}
     },
     {
         "id": "creator_workstation",
-        "title_th": "💻 สายทำงานหนัก / ตัดต่อ 4K",
-        "title_en": "💻 4K Creator / Workstation",
-        "desc": "64GB (32GBx2) DDR5 6000MHz Non-RGB",
-        "tag_th": "ประสิทธิภาพสูงสุด",
-        "tag_en": "Heavy Workstation",
-        "badge": "badge-workstation",
+        "title_th": "DDR5 64GB (32GBx2) 6000MHz",
+        "title_en": "DDR5 64GB (32GBx2) 6000MHz",
+        "desc": "CL36 / Non-RGB / UDIMM",
+        "tag_th": "WORKSTATION",
+        "tag_en": "WORKSTATION",
         "spec": {"brand": "Corsair", "gen": "DDR5", "cap": 64, "modules": 2, "speed": 6000, "cl": 36, "rgb": 0, "form": "UDIMM"}
     },
     {
         "id": "laptop_upgrade",
-        "title_th": "💼 สายอัปเกรดโน้ตบุ๊ก (Laptop)",
-        "title_en": "💼 Laptop / SO-DIMM Upgrade",
-        "desc": "16GB (16GBx1) DDR4 3200MHz SO-DIMM",
-        "tag_th": "สำหรับโน้ตบุ๊ก",
-        "tag_en": "Laptop SO-DIMM",
-        "badge": "badge-budget",
+        "title_th": "DDR4 16GB (16GBx1) 3200MHz",
+        "title_en": "DDR4 16GB (16GBx1) 3200MHz",
+        "desc": "CL22 / Non-RGB / SO-DIMM",
+        "tag_th": "LAPTOP",
+        "tag_en": "LAPTOP",
         "spec": {"brand": "Lexar", "gen": "DDR4", "cap": 16, "modules": 1, "speed": 3200, "cl": 22, "rgb": 0, "form": "SO-DIMM"}
     }
 ]
@@ -341,57 +501,65 @@ def load_predictor():
         return None
 
 def main():
-    # Top Utility Bar: Language Selector (TH / EN)
-    col_nav_left, col_nav_right = st.columns([3, 1])
-    with col_nav_right:
+    # Top Header Bar: Clean Title & Minimal Language Toggle
+    col_head, col_lang = st.columns([4, 1])
+    with col_lang:
         lang_choice = st.radio(
-            "Language / ภาษา",
-            ["🇹🇭 ภาษาไทย (TH)", "🇬🇧 English (EN)"],
+            "Language",
+            ["ไทย (TH)", "English (EN)"],
             horizontal=True,
-            label_visibility="collapsed"
+            label_visibility="collapsed",
+            key="site_lang_selector"
         )
     lang = "en" if "English" in lang_choice else "th"
     t = TRANSLATIONS[lang]
 
-    # Hero Banner
-    st.markdown(f"""
-    <div class="hero-banner">
-        <div class="hero-title">{t['title']}</div>
-        <div class="hero-subtitle">{t['subtitle']}</div>
-    </div>
-    """, unsafe_allow_html=True)
+    with col_head:
+        st.markdown(f"""
+        <div class="brand-header">
+            <h1 class="brand-title">{t['title']}</h1>
+            <div class="brand-subtitle">{t['subtitle']}</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     df = load_dataset()
     predictor = load_predictor()
 
     if df.empty:
-        st.error("⚠️ ไม่พบข้อมูลราคาสินค้า กรุณารันคำสั่ง 'python -m src.scraper.run_pipeline' ก่อนครับ")
+        st.error("ไม่พบข้อมูลราคาสินค้า กรุณารันคำสั่ง 'python -m src.scraper.run_pipeline' ก่อนดำเนินการ")
         return
 
     # Navigation Tabs
     tab1, tab2, tab3 = st.tabs([t['tab1'], t['tab2'], t['tab3']])
 
     # =========================================================
-    # TAB 1: EASY PRICE ESTIMATOR
+    # TAB 1: VALUATION ENGINE / PRICE ESTIMATOR
     # =========================================================
     with tab1:
-        st.markdown(f"### {t['method1_heading']}")
-        st.write(t['method1_sub'])
+        st.markdown(f"#### {t['method1_heading']}")
+        st.markdown(f"<p style='color: var(--color-text-muted); font-size: var(--text-sm); margin-bottom: var(--space-4);'>{t['method1_sub']}</p>", unsafe_allow_html=True)
 
-        # 5-Card Preset Grid
+        # 5 Presets Grid
         p_cols = st.columns(len(PRESETS))
         for idx, preset in enumerate(PRESETS):
             with p_cols[idx]:
                 tag_text = preset['tag_en'] if lang == "en" else preset['tag_th']
                 title_text = preset['title_en'] if lang == "en" else preset['title_th']
-                st.markdown(f"<span class='badge-tag {preset['badge']}'>{tag_text}</span>", unsafe_allow_html=True)
-                st.markdown(f"**{title_text}**")
-                st.caption(preset['desc'])
+                st.markdown(f"""
+                <div class="preset-row">
+                    <div>
+                        <span class="preset-badge">{tag_text}</span>
+                        <div class="preset-title">{title_text}</div>
+                        <div class="preset-desc">{preset['desc']}</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
                 if st.button(t['select_this_preset'], key=f"btn_preset_{preset['id']}", use_container_width=True):
                     st.session_state['selected_spec'] = preset['spec']
+                    st.rerun()
 
-        st.markdown("---")
-        st.markdown(f"### {t['method2_heading']}")
+        st.markdown("<hr style='border: none; border-top: 1px solid var(--color-border); margin: var(--space-6) 0;'>", unsafe_allow_html=True)
+        st.markdown(f"#### {t['method2_heading']}")
 
         if 'selected_spec' not in st.session_state:
             st.session_state['selected_spec'] = PRESETS[0]['spec']
@@ -401,7 +569,7 @@ def main():
         col_left, col_mid, col_right = st.columns(3)
 
         with col_left:
-            st.markdown(f"##### {t['step1_title']}")
+            st.markdown(f"<div style='font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2); color: var(--color-text-main);'>{t['step1_title']}</div>", unsafe_allow_html=True)
             form_options = [t['desktop_option'], t['laptop_option']]
             default_form_idx = 1 if curr_spec.get('form') == "SO-DIMM" else 0
             form_choice = st.selectbox(t['device_type'], form_options, index=default_form_idx)
@@ -418,7 +586,7 @@ def main():
             )
 
         with col_mid:
-            st.markdown(f"##### {t['step2_title']}")
+            st.markdown(f"<div style='font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2); color: var(--color-text-main);'>{t['step2_title']}</div>", unsafe_allow_html=True)
             cap_options = [8, 16, 24, 32, 48, 64, 96] if chosen_gen == "DDR5" else [4, 8, 16, 32, 64]
             current_cap = curr_spec.get('cap', 16)
             cap_idx = cap_options.index(current_cap) if current_cap in cap_options else 1
@@ -435,7 +603,7 @@ def main():
             chosen_brand = st.selectbox(t['brand_label'], brands, index=brand_idx)
 
         with col_right:
-            st.markdown(f"##### {t['step3_title']}")
+            st.markdown(f"<div style='font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2); color: var(--color-text-main);'>{t['step3_title']}</div>", unsafe_allow_html=True)
             mod_options = [1, 2, 4]
             cur_mod = curr_spec.get('modules', 2)
             mod_idx = mod_options.index(cur_mod) if cur_mod in mod_options else 1
@@ -443,7 +611,7 @@ def main():
                 t['modules_label'],
                 mod_options,
                 index=mod_idx,
-                format_func=lambda x: f"{x} " + ("Sticks (Dual-Channel)" if lang == "en" else "แถว (แนะนำ 2 แถว)") if x == 2 else f"{x} Sticks/แถว"
+                format_func=lambda x: f"{x} " + ("Sticks (Dual-Channel recommended)" if lang == "en" else "แถว (แนะนำ 2 แถวสำหรับ Dual-Channel)") if x == 2 else f"{x} Sticks/แถว"
             )
 
             cur_rgb = bool(curr_spec.get('rgb', 0))
@@ -467,7 +635,7 @@ def main():
         st.write("")
         st.button(t['calculate_btn'], type="primary", use_container_width=True)
 
-        # Inference
+        # Inference & Results
         if predictor:
             pred_result = predictor.predict(
                 brand=chosen_brand,
@@ -484,62 +652,69 @@ def main():
             low_price = pred_result['price_range']['lower_bound_thb']
             high_price = pred_result['price_range']['upper_bound_thb']
 
-            # Price Result Box
+            # Dominant Hero Price Panel
             st.markdown(f"""
-            <div class="price-highlight-box">
-                <div class="price-label">{t['fair_price_title']}</div>
-                <div class="price-value">{est_price:,} <span style="font-size: 1.8rem; font-weight: 500;">{t['currency']}</span></div>
-                <div class="price-range-badge">{t['fair_range_label']} <b>{low_price:,} – {high_price:,} {t['currency']}</b></div>
+            <div class="hero-price-panel">
+                <div class="hero-price-label">{t['fair_price_title']}</div>
+                <div class="hero-price-value">{est_price:,} <span style="font-size: var(--text-base); font-family: var(--font-sans); font-weight: 500; color: var(--color-text-muted);">{t['currency']}</span></div>
+                <div class="hero-price-range">{t['fair_range_label']} <strong>{low_price:,} – {high_price:,} {t['currency']}</strong></div>
             </div>
             """, unsafe_allow_html=True)
 
-            # Quick Hint to Tab 3 for Future Price Forecasting
+            # 6-Month Projection Technical Hint
             fc = pred_result.get('forecast', {})
             if fc:
                 rec_badge = fc['recommendation_badge_en'] if lang == "en" else fc['recommendation_badge_th']
                 trend_change = f"{fc['percent_change_6m']:+0.1f}%"
-                hint_text = (
-                    f"📈 **แนวโน้มราคา 6 เดือน**: `{trend_change}` ({rec_badge}) — ดูการคาดการณ์แบบละเอียดและกราฟเส้นทิศทางราคาได้ที่แท็บ **📊 3. กราฟตลาด**"
+                proj_hint = (
+                    f"[PROJECTION] แนวโน้มราคาตลาด 6 เดือน: {trend_change} ({rec_badge}) — ดูเส้นทางทิศทางราคาและรายละเอียดในแท็บ 3. สถิติและแนวโน้มตลาด"
                     if lang == "th" else
-                    f"📈 **6-Month Price Trend**: `{trend_change}` ({rec_badge}) — View full projection charts in **📊 3. Market Trends**"
+                    f"[PROJECTION] 6-Month Market Trend: {trend_change} ({rec_badge}) — See detailed trajectory in Tab 3. Market Trends"
                 )
-                st.caption(hint_text)
+                st.markdown(f"<div style='font-size: var(--text-xs); color: var(--color-text-muted); font-family: var(--font-mono); margin-bottom: var(--space-4);'>{proj_hint}</div>", unsafe_allow_html=True)
 
-            st.write("")
             col_eval1, col_eval2 = st.columns([1, 1])
 
             with col_eval1:
                 st.markdown(f"#### {t['buyer_advice_heading']}")
                 if lang == "th":
                     if chosen_cap >= 64:
-                        st.write("✅ **ความจุ 64GB+**: เหมาะสำหรับงานตัดต่อวิดีโอ 4K/8K, 3D Rendering, หรือเปิดโปรแกรมจำลอง Virtual Machine หลายตัวพร้อมกัน")
+                        st.markdown('<div class="advice-item"><strong>ความจุ 64GB+:</strong> เหมาะสำหรับงานตัดต่อวิดีโอ 4K/8K, 3D Rendering หรืองานสภาพแวดล้อมเสมือน (Virtualization) หลายระบบพร้อมกัน</div>', unsafe_allow_html=True)
                     elif chosen_cap == 32:
-                        st.write("✅ **ความจุ 32GB**: เป็นสเปกมาตรฐานระดับทองสำหรับเล่นเกมระดับ AAA ยุคปัจจุบันและทำงานทั่วไปได้อย่างลื่นไหลไร้สะดุด")
+                        st.markdown('<div class="advice-item"><strong>ความจุ 32GB:</strong> ขนาดแนะนำระดับมาตรฐานสำหรับเล่นเกมระดับ AAA และการทำงานหนักต่อเนื่องโดยไม่มีคอขวด</div>', unsafe_allow_html=True)
                     elif chosen_cap == 16:
-                        st.write("✅ **ความจุ 16GB**: เหมาะสำหรับเกมเมอร์งบประหยัด และการทำงานเอกสาร/ท่องเว็บทั่วไปได้อย่างลงตัว")
+                        st.markdown('<div class="advice-item"><strong>ความจุ 16GB:</strong> สเปกมาตรฐานเริ่มต้นสำหรับคอมพิวเตอร์ทั่วไปและการเล่นเกมในงบประหยัด</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="advice-item"><strong>ความจุต่ำกว่า 16GB:</strong> เหมาะสำหรับงานเอกสารและการท่องเว็บขั้นพื้นฐาน</div>', unsafe_allow_html=True)
 
                     if chosen_mod == 2:
-                        st.write("🚀 **แรมคู่ 2 แถว**: ยอดเยี่ยม! การใส่แรม 2 แถวจะเปิดระบบ **Dual-Channel** ช่วยให้อัตราการรับส่งข้อมูลของ CPU เร็วขึ้น 15-25%")
+                        st.markdown('<div class="advice-item"><strong>โครงสร้าง 2 แถว (Dual-Channel):</strong> เปิดใช้งานสถาปัตยกรรม 2 ช่องสัญญาณ ช่วยให้อัตราการรับส่งข้อมูลของ CPU เพิ่มขึ้น 15–25%</div>', unsafe_allow_html=True)
                     else:
-                        st.write("ℹ️ **แรมแถวเดียว 1 แถว**: หากเมนบอร์ดรองรับ แนะนำให้ซื้อแบบ 2 แถว (เช่น 8GBx2 แทน 16GBx1) เพื่อเปิดระบบ Dual-Channel จะเร็วกว่าชัดเจนครับ")
+                        st.markdown('<div class="advice-item"><strong>โครงสร้าง 1 แถว:</strong> หากเมนบอร์ดรองรับ แนะนำให้เลือกชุด 2 แถว (เช่น 8GBx2 แทน 16GBx1) เพื่อเปิดระบบ Dual-Channel</div>', unsafe_allow_html=True)
 
                     if chosen_rgb:
-                        st.write("🌈 **มีไฟ RGB**: สวยงาม โดดเด่นในเคสกระจก โดยทั่วไปจะมีราคาพรีเมียมเพิ่มขึ้นประมาณ 300 - 600 บาทเทียบกับรุ่น Non-RGB")
+                        st.markdown('<div class="advice-item"><strong>ระบบไฟ RGB:</strong> โมดูลไฟประดับส่งผลให้มีส่วนต่างราคาสูงขึ้นประมาณ 300 – 600 บาทเทียบกับรุ่น Non-RGB</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="advice-item"><strong>รุ่นมาตรฐาน (Non-RGB):</strong> คุ้มค่าสูงสุดต่อเม็ดเงินโดยไม่มีต้นทุนเพิ่มของชุดไฟประดับ</div>', unsafe_allow_html=True)
                 else:
                     if chosen_cap >= 64:
-                        st.write("✅ **64GB+ Capacity**: Ideal for 4K/8K video editing, 3D rendering, and running multiple virtual machines smoothly.")
+                        st.markdown('<div class="advice-item"><strong>64GB+ Capacity:</strong> Recommended for 4K/8K video editing, 3D rendering, and multi-VM environments.</div>', unsafe_allow_html=True)
                     elif chosen_cap == 32:
-                        st.write("✅ **32GB Capacity**: The sweet spot for contemporary AAA gaming titles and heavy multitasking.")
+                        st.markdown('<div class="advice-item"><strong>32GB Capacity:</strong> Recommended sweet spot for modern AAA gaming and intensive multitasking.</div>', unsafe_allow_html=True)
                     elif chosen_cap == 16:
-                        st.write("✅ **16GB Capacity**: Great budget-friendly baseline for mainstream gaming and daily productivity.")
+                        st.markdown('<div class="advice-item"><strong>16GB Capacity:</strong> Baseline capacity for mainstream productivity and budget gaming.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="advice-item"><strong>Sub-16GB Capacity:</strong> Suitable only for lightweight office workflows.</div>', unsafe_allow_html=True)
 
                     if chosen_mod == 2:
-                        st.write("🚀 **2 Modules (Dual-Channel)**: Excellent choice! Dual-channel configuration boosts CPU memory bandwidth by 15-25%.")
+                        st.markdown('<div class="advice-item"><strong>2 Modules (Dual-Channel):</strong> Dual-channel memory throughput provides ~15–25% higher CPU bandwidth.</div>', unsafe_allow_html=True)
                     else:
-                        st.write("ℹ️ **Single Stick**: If your motherboard has 2 or more slots, a 2-stick kit is strongly recommended for dual-channel speeds.")
+                        st.markdown('<div class="advice-item"><strong>Single Module:</strong> If supported by motherboard, a 2-stick kit is recommended to enable dual-channel bandwidth.</div>', unsafe_allow_html=True)
 
                     if chosen_rgb:
-                        st.write("🌈 **RGB Lighting**: Aesthetic RGB heat-spreaders typically carry a slight ~300 - 600 THB premium over non-RGB counterparts.")
+                        st.markdown('<div class="advice-item"><strong>RGB Lighting:</strong> Carries a 300–600 THB price premium over non-RGB equivalents.</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div class="advice-item"><strong>Non-RGB Heatspreader:</strong> Optimal price-to-performance without decorative lighting markup.</div>', unsafe_allow_html=True)
 
             with col_eval2:
                 st.markdown(f"#### {t['matching_store_heading']}")
@@ -554,15 +729,15 @@ def main():
 
                     for _, row in top_candidates.iterrows():
                         st.markdown(f"""
-                        <div class="shop-product-card">
-                            <div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">{row['name']}</div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem;">
+                        <div class="store-product-row">
+                            <div class="store-product-title">{row['name']}</div>
+                            <div class="store-product-meta">
                                 <div>
-                                    <span style="font-size: 1.2rem; font-weight: 700; color: #2563eb;">{row['price_thb']:,} ฿</span>
-                                    <span style="font-size: 0.8rem; color: #64748b; margin-left: 0.5rem;">({row['price_per_gb']:.1f} ฿/GB)</span>
+                                    <span class="store-product-price">{row['price_thb']:,} {t['currency']}</span>
+                                    <span class="store-product-unit">({row['price_per_gb']:.1f} {t['currency']}/GB)</span>
                                 </div>
-                                <a href="{row['url']}" target="_blank" style="text-decoration: none; background: #2563eb; color: white; padding: 0.28rem 0.85rem; border-radius: 0.4rem; font-size: 0.85rem; font-weight: 500;">
-                                    {t['view_store_btn']}
+                                <a href="{row['url']}" target="_blank" class="store-link-btn">
+                                    {t['view_store_btn']} &rarr;
                                 </a>
                             </div>
                         </div>
