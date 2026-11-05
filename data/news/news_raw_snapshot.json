@@ -1,14 +1,96 @@
 {
-  "fetched_at": "2026-11-05T13:21:41.291850+00:00",
-  "total_items": 6,
+  "fetched_at": "2026-11-05T13:31:45.311391+00:00",
+  "total_items": 10,
   "items": [
     {
-      "id": "mem-001",
-      "title": "Samsung Reallocates Legacy DDR4 Wafer Lines to High-Bandwidth HBM3e and HBM4 Memory",
-      "source": "TrendForce / DigiTimes",
-      "published_at": "2026-11-03T08:30:00Z",
-      "url": "https://www.trendforce.com/news/dram-hbm-reallocation",
-      "summary": "Samsung Electronics is accelerating the transition of its wafer production lines away from mature DDR4 to fulfill massive server demand for HBM3e and next-gen HBM4 AI accelerators, reducing retail DDR4 supply."
+      "id": "rss-7901",
+      "title": "Samsung and SK Hynix are upgrading Chinese factories to produce advanced RAM chips as AI data center competition ramps up — big players move to fight off the threat from CXMT and co. - Tom's Hardware",
+      "source": "Tom's Hardware",
+      "published_at": "Wed, 21 Oct 2026 07:00:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiywJBVV95cUxNTjQtNUtfdjBfYVlVQVZZSnZXTl9pWnliTmVPc01oUDh2SlY5Zk1RVXk1anIxMTRTRU1MUFdDUkl0RFBrMHFoa1diaVp4ektVR21YYnA5aEdjeXJuMVo3X2tVekxmanlZajhfM1J3X3JfbW4tUGE3NE0wSHlXalRPQ001M2pZNDRFVVNIRUl0c0hYMTFUbkNVNmx2UTBBWG9EaEJjeVhHMmxCcG5oR25hVjlReHNJUjM2NHlyd0Fxc0VpRWR2cjY0UGxGSjZQNU1YVTFNcGU5MjVfam8yano2QTBNQkg3RThKUHg2LThtM0J6SmJJbXVqLVVfOFQtc3lYaGxjTHdpZnN6OU5tUTJxN2tnRWI3ajNBXzdEWnhnTlVDeTZoaHUySGR1OWIyY3I3UEtSYnZSV1doRW1DQ21NYzhGWTJTWFI4UDNj?oc=5",
+      "summary": "Samsung and SK Hynix are upgrading Chinese factories to produce advanced RAM chips as AI data center competition ramps up — big players move to fight off the threat from CXMT and co.&nbsp;&nbsp;Tom's Hardware",
+      "keywords": []
+    },
+    {
+      "id": "rss-747477",
+      "title": "Micron, SK Hynix Stocks Slip Overnight: China’s CXMT Advances Next-Gen DRAM Technology - Yahoo Finance",
+      "source": "Yahoo Finance",
+      "published_at": "Mon, 12 Oct 2026 07:00:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQRTVlb1hnYTgxdUIzR3BnbTRrZk5LdUZrM3ZsUjIyM1U2eURibWtFOXB6N1BBOUpleXI3cjRDdWYzZnJ3S09lZDNtTHRJbnZEU2hEbGdIU3dCVmxlS2hhajBpMU9DWW5yLVEtNFdXaU9FbHp0RjhMME1kQmROTTJCak5GNWlMYW01WW9OYmM4MVo0MHNhOFdz?oc=5",
+      "summary": "Micron, SK Hynix Stocks Slip Overnight: China’s CXMT Advances Next-Gen DRAM Technology&nbsp;&nbsp;Yahoo Finance",
+      "keywords": []
+    },
+    {
+      "id": "rss-673121",
+      "title": "DRAM: Buy The Dip In The Most Important AI Bottleneck (BATS:DRAM) - Seeking Alpha",
+      "source": "Seeking Alpha",
+      "published_at": "Fri, 09 Oct 2026 07:00:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPZ2N6NkJDZW1acUZrV3lVeHFxSThaUkJDTEZHaDYxU2ZYLTl1d2JUbDZZVUR3VVJsbUhJWFEtZE9mLVJhbVY5WWlVNTM3WVhLLWk2bVUtb0RPTlF2blZnMnlYVk5pUFF0dkVwMkRMbm9FUVM4UmYwbkRrWHA5MFhVWGRfZ0JieHZId0I2SDFwS0s5Q0IxRnlSMg?oc=5",
+      "summary": "DRAM: Buy The Dip In The Most Important AI Bottleneck (BATS:DRAM)&nbsp;&nbsp;Seeking Alpha",
+      "keywords": []
+    },
+    {
+      "id": "rss-669116",
+      "title": "[News] DRAM Prices Seen Rising 20% QoQ in 4Q26 Despite Slower Gains; AI Demand, Tight Supply Support Outlook - TrendForce",
+      "source": "TrendForce",
+      "published_at": "Tue, 20 Oct 2026 07:00:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxPV3lnMFNjd3BkNzVHMXdDUVhoZHA0MmhLSnI0TUkteEJFQ0dEUVdnVjdTSE14R2p4TG03dGZRUEpBMWx6bGYzNklNcjBNRjd1RXotcXM5MkNkNzNuZ3hfOVdpTVp4bTJ3cVJ6QUlsYmpXZElxVXZuenlBamY2T1VGc2dJeVVQZ19NUEFUQXlVbUN5VlBIUkozRGFDVzduQlNDNm9CaHFlektTUTVOSVh0NTczZm5paWx3R3FjQXhqbGFXckdHREVvVXhUSVB0YkhRd1N4bUNVLVhJT293Z3FZeg?oc=5",
+      "summary": "[News] DRAM Prices Seen Rising 20% QoQ in 4Q26 Despite Slower Gains; AI Demand, Tight Supply Support Outlook&nbsp;&nbsp;TrendForce",
+      "keywords": []
+    },
+    {
+      "id": "rss-92243",
+      "title": "“Memory-Centric Server Systems Are the Future”: SK hynix Presents Its Next-Generation AI Infrastructure Vision at OCP Global Summit 2026 - SK hynix",
+      "source": "SK hynix",
+      "published_at": "Fri, 16 Oct 2026 07:00:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5NY1lKQU1CeUtCckRPYlVuWWJjcXJXUFQ0d3BvWnQ4dXpyY205WU5lM183bkZ3T3ppcTlLaWNvXzlDVEx1Z0Q1eEJMMnNLM20zbmlXdmVjenNyLXdqY21rdA?oc=5",
+      "summary": "“Memory-Centric Server Systems Are the Future”: SK hynix Presents Its Next-Generation AI Infrastructure Vision at OCP Global Summit 2026&nbsp;&nbsp;SK hynix",
+      "keywords": []
+    },
+    {
+      "id": "rss-67591",
+      "title": "Samsung, SK Hynix Stocks Plunge on CXMT's 4F² DRAM Announcement - 조선일보",
+      "source": "조선일보",
+      "published_at": "Thu, 15 Oct 2026 07:00:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNNmRJeFZyOXQ4R0RhSHhNcHdXZWlfLUlwN1B3Qk1sR0sydXpQZmVuXy13cHdWcU5XemZkcUg5cVFveGZCRTVtUnNtalBqSDQ0TExfcFE1bnJfRGJkVThCVVdreW04X19IRFB6dElnNFNqdDM3aDZGSWo1SnBvdjl6anRKWkhBdHh6?oc=5",
+      "summary": "Samsung, SK Hynix Stocks Plunge on CXMT's 4F² DRAM Announcement&nbsp;&nbsp;조선일보",
+      "keywords": []
+    },
+    {
+      "id": "rss-993433",
+      "title": "CXMT’s 4F² DRAM Plan Sends Samsung and SK hynix Shares Sliding - Technology Org",
+      "source": "Technology Org",
+      "published_at": "Wed, 14 Oct 2026 07:00:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOVEtvcG5yem9zcGdPOFI5QXBfYlNQTFl2SzdGcENzNlczeEt5RnNiMTBpX0dvRmptVGgwTkhudWllNUlJVXNBQ0FfQjZ6S08tNk1IaU4zcHRHMzFhWEcwNDhXeHpNMV85TDJZaFdYWHY5Uy1GXzNrMHVISlh1cEoydHNBbDZIa1ViSkE?oc=5",
+      "summary": "CXMT’s 4F² DRAM Plan Sends Samsung and SK hynix Shares Sliding&nbsp;&nbsp;Technology Org",
+      "keywords": []
+    },
+    {
+      "id": "rss-689114",
+      "title": "DRAM Giants Get Rich as China Builds a Threat - 24/7 Wall St.",
+      "source": "24/7 Wall St.",
+      "published_at": "Thu, 15 Oct 2026 07:00:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNN3dIS1NZaEZ6UXJNRmh1eVdHdVdERGR5NHpzUXZsclh2b2tsRURRMzR6ZU8tWnkxOFUyaE53cUhiUEZOUzVES2dDNmpCUWV2T2hNZWpZd3J3RXZLaHB5UVVSbDVqOE9sVFBlR2VTVUE1NWxGOHlRRUUtV1J3bDVGMnduTzlYRkVsQ3R4QllTbnUzSTg?oc=5",
+      "summary": "DRAM Giants Get Rich as China Builds a Threat&nbsp;&nbsp;24/7 Wall St.",
+      "keywords": []
+    },
+    {
+      "id": "rss-836923",
+      "title": "China’s CXMT makes progress in chip design pursued by Samsung, SK Hynix - South China Morning Post",
+      "source": "South China Morning Post",
+      "published_at": "Mon, 12 Oct 2026 07:00:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOZmZHS080emE3cTZyaHozcTJmTTBYUk1GZEhNX3drTUh1S29LZWJRaWpUMlplQWd4STZzZFRNWFZkeEp4UVdiSHdaZlZPWVdHUnFHUDRrTDlWbzIzTU9LeUpoTDZ4ZjNxY1FBemZaVnRaOFlxNjJWcm9RaVR2ZWtldTlQWWhUczc4LUxmTG8tMGpUNTNvQ2lDUHd1RGZ5b3IyYzd5MUZqcU16NnN0aUIycmVIdlhZT2NseFBCaDFhdW_SAcABQVVfeXFMTU1TVTBjV2xjdGFob3d3R3VVTE0tczZyLXA3elItTmN3OVNHUm5OeER4SUxNVVdCNEZESTBzUE41dGNqWWd2SGt3czNTUW5kcWxZN3RIblpGQWtfTHZ3UnNzYm1QWUdVckUzYkp5ZkpyMUxLLXdDNFZROHdjMGFST0tsLVcxWlVETUkyMjVZaHpkTkZEN01URzUyRjZlOWV6T1hVX0FvaHVVTVM2ME45QWI5QXdHYzQ1b1dJVElDZGNG?oc=5",
+      "summary": "China’s CXMT makes progress in chip design pursued by Samsung, SK Hynix&nbsp;&nbsp;South China Morning Post",
+      "keywords": []
+    },
+    {
+      "id": "rss-844560",
+      "title": "Apple faces unprecedented memory cost increases as RAM prices continue to surge, manufacturing bill climbs by $33 billion — rising component expenses threaten margins through the holiday quarter and into 2027 - Tom's Hardware",
+      "source": "Tom's Hardware",
+      "published_at": "Tue, 03 Nov 2026 14:28:59 GMT",
+      "url": "https://news.google.com/rss/articles/CBMi8AJBVV95cUxQRVRGUHpOR3dGQWFndFpuekxKZzF0c0FfV3g5UGVYSEd3WjJxeUYySHF6R29SdXlrUHB4d3prWjQ4aGlYbUFxSnBOY0VzZE9JYjJTRHM1S1J0QTFId2tCWnpNdVRFM000UEtsMG9MekJQS1BpV2hZaVp4ZTU5NlpCZ0dBMUF2X1VrQUROWHNfVzY1cWpmZjA1dGpPci1DZGNvNVZuRnQtbXRzM2gyMmhZbXFEbmo0MXQzWDR1WEdvR3M5aWk5SHY1RFlYUlJBdXYya2pOQk5yZGJXUlMyN0hOX21zRVVkZk9NVGU4SWUwOHJ1T3hZSVJSWVRSWlZtaHRJLWRHRTkwZnFxWkZwNEdISU9NU3VWNDl5MWRaYklnX3UwOXA5R19JM0dIbHFYTmVQQVhTd3ppU0VfdEtsMHU1V3ZGcWc3azVaWVc4ZF9oVDg4YnlKc0RlM0o3TXRfa0JnOE9vRDZlaVpjM2g2Wmxveg?oc=5",
+      "summary": "Apple faces unprecedented memory cost increases as RAM prices continue to surge, manufacturing bill climbs by $33 billion — rising component expenses threaten margins through the holiday quarter and into 2027&nbsp;&nbsp;Tom's Hardware",
+      "keywords": []
     }
   ]
 }

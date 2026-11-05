@@ -694,10 +694,6 @@ def build_market_comparison_timeline(lang="th"):
     d4_rates = [100.0, 100.3, 100.8, 101.5, 102.1, 102.7, 103.2]
     d5_rates = [100.0, 98.7, 97.3, 96.0, 94.8, 93.8, 93.0]
 
-    if news_impact_pct:
-        adj = (news_impact_pct / 100.0) * 0.4
-        factors = [round(f + (adj * (i / 6.0)), 4) for i, f in enumerate(factors)]
-
     rows = []
     for m, r4, r5, n4, n5 in zip(months, d4_rates, d5_rates, notes_d4, notes_d5):
         rows.append({
