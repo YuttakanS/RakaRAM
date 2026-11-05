@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split, KFold, cross_validate
 from sklearn.compose import ColumnTransformer, TransformedTargetRegressor
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.pipeline import Pipeline
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import Ridge, LinearRegression
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from src.utils.logger import get_logger
@@ -38,6 +38,7 @@ def evaluate_models(X: pd.DataFrame, y: pd.Series):
     base_models = {
         "Random Forest": RandomForestRegressor(n_estimators=180, max_depth=12, random_state=42),
         "Gradient Boosting": GradientBoostingRegressor(n_estimators=180, learning_rate=0.07, max_depth=4, random_state=42),
+        "Linear Regression": LinearRegression(),
         "Ridge Regression": Ridge(alpha=1.5)
     }
 
