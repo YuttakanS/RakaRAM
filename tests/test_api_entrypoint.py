@@ -13,7 +13,6 @@ class TestApiEntrypoint(unittest.TestCase):
         """Ensure standard serverless variables are exported at module level."""
         self.assertTrue(hasattr(main, "app"), "main.py must export 'app'")
         self.assertTrue(hasattr(main, "application"), "main.py must export 'application'")
-        self.assertTrue(hasattr(main, "handler"), "main.py must export 'handler'")
         self.assertIsNotNone(main.app)
 
     def test_root_endpoint(self):

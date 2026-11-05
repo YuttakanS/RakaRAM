@@ -19,11 +19,10 @@ if str(ROOT_DIR) not in sys.path:
 
 # Serverless WSGI/ASGI entrypoint exports (ensures Vercel discovery passes if app/app.py is scanned)
 try:
-    from main import app, application, handler
+    from main import app, application
 except Exception:
     app = None
     application = None
-    handler = None
 
 import html
 import os

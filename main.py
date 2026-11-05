@@ -33,7 +33,6 @@ app = FastAPI(
 
 # Standard Serverless WSGI/ASGI Aliases (Vercel, AWS Lambda, etc.)
 application = app
-handler = app
 
 # Enable Cross-Origin Resource Sharing (CORS)
 app.add_middleware(

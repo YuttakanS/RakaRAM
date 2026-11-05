@@ -116,7 +116,10 @@ def fetch_dram_news(force_live: bool = False) -> List[Dict[str, Any]]:
     Fetches latest DRAM news items.
     Tries live RSS feeds if network allows; falls back to curated benchmark data seamlessly.
     """
-    DATA_NEWS_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        DATA_NEWS_DIR.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        pass
     live_items = []
 
     if force_live:

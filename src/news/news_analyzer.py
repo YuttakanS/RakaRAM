@@ -236,7 +236,10 @@ def analyze_news_articles(articles: List[Dict[str, Any]] = None, force_refresh: 
     """
     Analyzes news items and aggregates net price impact for DDR4 and DDR5.
     """
-    DATA_NEWS_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        DATA_NEWS_DIR.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        pass
 
     if not articles:
         articles = fetch_dram_news(force_live=force_refresh)

@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "saved_models/**, data/**, src/**"
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
