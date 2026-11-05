@@ -1,0 +1,62 @@
+{
+  "model_name": "Random Forest",
+  "saved_at": "2026-11-05T16:09:53.140593",
+  "total_training_samples": 241,
+  "features": {
+    "categorical": [
+      "brand",
+      "generation",
+      "form_factor"
+    ],
+    "numerical": [
+      "capacity_gb",
+      "modules",
+      "speed_mhz",
+      "cas_latency",
+      "has_rgb"
+    ]
+  },
+  "supported_brands": [
+    "ADATA",
+    "Acer",
+    "Apacer",
+    "Corsair",
+    "Crucial",
+    "G.Skill",
+    "Hiksemi",
+    "KLEVV",
+    "Kingston",
+    "Lexar",
+    "Other",
+    "Patriot",
+    "Transcend"
+  ],
+  "supported_generations": [
+    "DDR4",
+    "DDR5"
+  ],
+  "metrics": {
+    "cv_5fold": {
+      "Random Forest": {
+        "r2_mean": 0.9022604044105489,
+        "mae_mean": 2744.5139794971988,
+        "rmse_mean": 5679.266505549635
+      },
+      "Gradient Boosting": {
+        "r2_mean": 0.8023098191428449,
+        "mae_mean": 3041.6552310576412,
+        "rmse_mean": 7394.685495398204
+      },
+      "Ridge Regression": {
+        "r2_mean": 0.7963710869954592,
+        "mae_mean": 3756.318996771943,
+        "rmse_mean": 7937.696619307678
+      }
+    },
+    "test_set": {
+      "r2": 0.9533156079759714,
+      "mae": 1434.0879549315641,
+      "rmse": 3446.82356009241
+    }
+  }
+}
