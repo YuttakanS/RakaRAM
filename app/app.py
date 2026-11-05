@@ -293,6 +293,78 @@ st.markdown("""
         border-bottom: 2px solid var(--color-accent) !important;
         font-weight: 600 !important;
     }
+
+    /* Table & Catalog Index (Akihabara Index) */
+    .index-status-bar {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: var(--space-2) var(--space-4);
+        margin-bottom: var(--space-4);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        align-items: center;
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        color: var(--color-text-muted);
+    }
+    .index-status-item {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+    }
+    .index-status-val {
+        font-weight: 700;
+        color: var(--color-text-main);
+    }
+    .index-status-highlight {
+        color: var(--color-accent);
+        font-weight: 700;
+    }
+
+    /* Empty State Panel */
+    .empty-state-panel {
+        background-color: var(--color-surface);
+        border: 1px dashed var(--color-border);
+        border-radius: var(--radius);
+        padding: var(--space-8) var(--space-4);
+        text-align: center;
+        margin: var(--space-4) 0;
+    }
+    .empty-state-tag {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        padding: 2px 8px;
+        background-color: var(--color-canvas);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-muted);
+        border-radius: var(--radius);
+        margin-bottom: var(--space-2);
+    }
+    .empty-state-title {
+        font-size: var(--text-base);
+        font-weight: 600;
+        color: var(--color-text-main);
+        margin-bottom: var(--space-1);
+    }
+    .empty-state-desc {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        max-width: 440px;
+        margin: 0 auto var(--space-4) auto;
+        line-height: 1.5;
+    }
+
+    /* Dataframe wrapper border */
+    div[data-testid="stDataFrame"] {
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        overflow: hidden;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -336,19 +408,37 @@ TRANSLATIONS = {
         "matching_store_heading": "รายการสินค้าจริงในสต็อก (Live Store Matching)",
         "view_store_btn": "ดูหน้าร้าน JIB",
         "no_direct_match": "ขณะนี้ยังไม่มีสินค้าตรงกับความจุนี้ในสต็อก แต่โมเดลสามารถประเมินราคาที่สมเหตุสมผลให้ได้ตามสถิติของตลาด",
-        "catalog_heading": "รายการราคาสินค้าจริงจากร้านค้าไอที",
-        "catalog_sub": "ค้นหาและเปรียบเทียบราคาแรมจากร้านค้าไอทีในไทยแบบรายชิ้น:",
-        "search_label": "ค้นหาตามชื่อรุ่น หรือ ยี่ห้อ",
-        "search_placeholder": "พิมพ์ชื่อรุ่น เช่น Kingston, Corsair, 32GB...",
-        "filter_gen_label": "กรองตามรุ่น DDR",
+        "catalog_heading": "2. รายการราคาหน้าร้าน (Retail Price Index)",
+        "catalog_sub": "ดัชนีราคาสินค้าจริงจากร้านค้าไอทีในไทย ค้นหาและกรองสเปกตามต้องการ:",
+        "search_label": "ค้นหาตามชื่อรุ่นหรือยี่ห้อ",
+        "search_placeholder": "พิมพ์ชื่อรุ่น เช่น Kingston, Fury, 6000MHz...",
+        "filter_brand_label": "ยี่ห้อ (Brand)",
+        "filter_gen_label": "รุ่น DDR",
+        "filter_cap_label": "ความจุ (Capacity)",
         "filter_all": "ทั้งหมด",
         "filter_ddr4": "DDR4",
         "filter_ddr5": "DDR5",
-        "sort_label": "เรียงลำดับ",
+        "sort_label": "การเรียงลำดับ",
         "sort_price_asc": "ราคา: ต่ำไปสูง",
         "sort_price_desc": "ราคา: สูงไปต่ำ",
         "sort_val_asc": "ความคุ้มค่า (฿/GB ต่ำสุด)",
-        "items_found": "จำนวนรายการที่พบ",
+        "sort_speed_desc": "ความเร็วบัส: สูงไปต่ำ",
+        "items_found": "จำนวนที่พบ",
+        "stat_lowest_price": "ต่ำสุด",
+        "stat_highest_price": "สูงสุด",
+        "stat_avg_val": "เฉลี่ยต่อ GB",
+        "empty_title": "ไม่พบรายการสินค้าที่ตรงกับเงื่อนไข",
+        "empty_desc": "ไม่พบข้อมูลตามคำค้นหาหรือตัวกรองที่เลือก กรุณาลองเปลี่ยนคำค้นหา หรือรีเซ็ตตัวกรองเพื่อดูรายการทั้งหมด",
+        "reset_filters_btn": "รีเซ็ตตัวกรอง",
+        "col_brand": "ยี่ห้อ",
+        "col_name": "ชื่อรุ่นสินค้าและสเปก",
+        "col_gen": "DDR",
+        "col_cap": "ความจุ",
+        "col_speed": "บัสสปีด",
+        "col_price": "ราคาหน้าร้าน",
+        "col_val": "฿/GB",
+        "col_link": "ลิงก์หน้าร้าน",
+        "view_store_link": "ดูหน้าร้าน JIB",
         "insights_brand_heading": "เปรียบเทียบราคาเฉลี่ยต่อ GB แยกตามยี่ห้อ",
         "insights_brand_sub": "ค่า ฿/GB ต่ำ หมายถึงความจุต่อเม็ดเงินที่คุ้มค่ากว่า",
         "insights_speed_heading": "ความเร็วบัส (MHz) กับระดับราคา (บาท)",
@@ -401,19 +491,37 @@ TRANSLATIONS = {
         "matching_store_heading": "Matching Retail Stock (JIB)",
         "view_store_btn": "View Store",
         "no_direct_match": "No identical item in stock currently, but AI estimated fair value based on overall market trends.",
-        "catalog_heading": "Retail Price Index",
-        "catalog_sub": "Browse and compare individual RAM retail listings in Thailand:",
+        "catalog_heading": "2. Retail Price Index",
+        "catalog_sub": "Live hardware retail listings from Thai IT retailers. Filter by spec and price:",
         "search_label": "Search by model or brand",
-        "search_placeholder": "e.g., Kingston, Corsair, 32GB...",
-        "filter_gen_label": "Filter Generation",
+        "search_placeholder": "e.g., Kingston, Fury, 6000MHz...",
+        "filter_brand_label": "Brand",
+        "filter_gen_label": "Generation",
+        "filter_cap_label": "Capacity",
         "filter_all": "All",
         "filter_ddr4": "DDR4",
         "filter_ddr5": "DDR5",
-        "sort_label": "Sort by",
+        "sort_label": "Sort By",
         "sort_price_asc": "Price: Low to High",
         "sort_price_desc": "Price: High to Low",
-        "sort_val_asc": "Value (Lowest ฿/GB)",
-        "items_found": "Total items found",
+        "sort_val_asc": "Value (Lowest THB/GB)",
+        "sort_speed_desc": "Bus Speed: High to Low",
+        "items_found": "Records Found",
+        "stat_lowest_price": "Lowest",
+        "stat_highest_price": "Highest",
+        "stat_avg_val": "Avg / GB",
+        "empty_title": "No matching hardware records found",
+        "empty_desc": "No listings match your search query or active filters. Try adjusting terms or reset filters to view all records.",
+        "reset_filters_btn": "Reset Filters",
+        "col_brand": "Brand",
+        "col_name": "Product Model & Specs",
+        "col_gen": "DDR",
+        "col_cap": "Capacity",
+        "col_speed": "Bus Speed",
+        "col_price": "Retail Price",
+        "col_val": "THB/GB",
+        "col_link": "Store Link",
+        "view_store_link": "View Store (JIB)",
         "insights_brand_heading": "Median Price per GB by Brand",
         "insights_brand_sub": "Lower THB/GB represents higher capacity per money spent.",
         "insights_speed_heading": "Bus Speed (MHz) vs Price (THB)",
@@ -746,52 +854,143 @@ def main():
                     st.info(t['no_direct_match'])
 
     # =========================================================
-    # TAB 2: LIVE MARKET CATALOG (Shopee / JIB Style)
+    # TAB 2: LIVE MARKET CATALOG (Retail Price Index)
     # =========================================================
     with tab2:
-        st.markdown(f"### {t['catalog_heading']}")
-        st.write(t['catalog_sub'])
+        st.markdown(f"#### {t['catalog_heading']}")
+        st.markdown(f"<p style='color: var(--color-text-muted); font-size: var(--text-sm); margin-bottom: var(--space-4);'>{t['catalog_sub']}</p>", unsafe_allow_html=True)
 
-        s_col1, s_col2, s_col3 = st.columns([2, 1, 1])
-        with s_col1:
-            search_query = st.text_input(t['search_label'], placeholder=t['search_placeholder'])
-        with s_col2:
-            f_gen = st.selectbox(t['filter_gen_label'], [t['filter_all'], t['filter_ddr4'], t['filter_ddr5']])
-        with s_col3:
-            f_sort = st.selectbox(t['sort_label'], [t['sort_price_asc'], t['sort_price_desc'], t['sort_val_asc']])
+        # 4-Column Filter Toolbar
+        f_col1, f_col2, f_col3, f_col4 = st.columns([2, 1, 1, 1])
 
+        with f_col1:
+            search_query = st.text_input(t['search_label'], placeholder=t['search_placeholder'], key="t2_search")
+
+        with f_col2:
+            brand_list = [t['filter_all']] + sorted(df['brand'].unique().tolist())
+            if "t2_brand" in st.session_state and st.session_state["t2_brand"] not in brand_list:
+                st.session_state["t2_brand"] = brand_list[0]
+            chosen_brand_f = st.selectbox(t['filter_brand_label'], brand_list, key="t2_brand")
+
+        with f_col3:
+            gen_list = [t['filter_all'], t['filter_ddr4'], t['filter_ddr5']]
+            if "t2_gen" in st.session_state and st.session_state["t2_gen"] not in gen_list:
+                st.session_state["t2_gen"] = gen_list[0]
+            chosen_gen_f = st.selectbox(t['filter_gen_label'], gen_list, key="t2_gen")
+
+        with f_col4:
+            cap_vals = sorted(df['capacity_gb'].unique().tolist())
+            cap_list = [t['filter_all']] + [f"{c} GB" for c in cap_vals]
+            if "t2_cap" in st.session_state and st.session_state["t2_cap"] not in cap_list:
+                st.session_state["t2_cap"] = cap_list[0]
+            chosen_cap_f = st.selectbox(t['filter_cap_label'], cap_list, key="t2_cap")
+
+        # Sorting & Quick Reset Row
+        sort_col, spacer_col, reset_col = st.columns([2, 2, 1])
+        with sort_col:
+            sort_opts = [t['sort_price_asc'], t['sort_price_desc'], t['sort_val_asc'], t['sort_speed_desc']]
+            if "t2_sort" in st.session_state and st.session_state["t2_sort"] not in sort_opts:
+                st.session_state["t2_sort"] = sort_opts[0]
+            chosen_sort = st.selectbox(t['sort_label'], sort_opts, key="t2_sort")
+
+        with reset_col:
+            st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
+            if st.button(t['reset_filters_btn'], key="btn_filter_reset", use_container_width=True):
+                st.session_state['t2_search'] = ""
+                st.session_state['t2_brand'] = brand_list[0]
+                st.session_state['t2_gen'] = gen_list[0]
+                st.session_state['t2_cap'] = cap_list[0]
+                st.session_state['t2_sort'] = sort_opts[0]
+                st.rerun()
+
+        # Filter Execution
         view_df = df.copy()
-        if search_query:
-            view_df = view_df[view_df['name'].str.contains(search_query, case=False, na=False)]
-        if f_gen == t['filter_ddr4']:
+
+        if search_query.strip():
+            q = search_query.strip()
+            view_df = view_df[
+                view_df['name'].str.contains(q, case=False, na=False) |
+                view_df['brand'].str.contains(q, case=False, na=False)
+            ]
+
+        if chosen_brand_f != t['filter_all']:
+            view_df = view_df[view_df['brand'] == chosen_brand_f]
+
+        if chosen_gen_f == t['filter_ddr4']:
             view_df = view_df[view_df['generation'] == 'DDR4']
-        elif f_gen == t['filter_ddr5']:
+        elif chosen_gen_f == t['filter_ddr5']:
             view_df = view_df[view_df['generation'] == 'DDR5']
 
-        if f_sort == t['sort_price_asc']:
+        if chosen_cap_f != t['filter_all']:
+            try:
+                c_val = int(chosen_cap_f.replace(" GB", "").strip())
+                view_df = view_df[view_df['capacity_gb'] == c_val]
+            except ValueError:
+                pass
+
+        # Sort Execution
+        if chosen_sort == t['sort_price_asc']:
             view_df = view_df.sort_values(by='price_thb', ascending=True)
-        elif f_sort == t['sort_price_desc']:
+        elif chosen_sort == t['sort_price_desc']:
             view_df = view_df.sort_values(by='price_thb', ascending=False)
-        else:
+        elif chosen_sort == t['sort_speed_desc']:
+            view_df = view_df.sort_values(by='speed_mhz', ascending=False)
+        else: # value
             view_df = view_df.sort_values(by='price_per_gb', ascending=True)
 
-        st.caption(f"{t['items_found']}: **{len(view_df)}**")
+        # Render Results or Empty State
+        if view_df.empty:
+            st.markdown(f"""
+            <div class="empty-state-panel">
+                <span class="empty-state-tag">[NO RECORD MATCHED]</span>
+                <div class="empty-state-title">{t['empty_title']}</div>
+                <div class="empty-state-desc">{t['empty_desc']}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            min_p = int(view_df['price_thb'].min())
+            max_p = int(view_df['price_thb'].max())
+            avg_val = float(view_df['price_per_gb'].mean())
+            count = len(view_df)
 
-        st.dataframe(
-            view_df[['brand', 'name', 'generation', 'capacity_gb', 'speed_mhz', 'price_thb', 'price_per_gb', 'url']],
-            use_container_width=True,
-            column_config={
-                "brand": st.column_config.TextColumn("Brand" if lang == "en" else "ยี่ห้อ"),
-                "name": st.column_config.TextColumn("Product Title" if lang == "en" else "ชื่อรุ่นสินค้า", width="large"),
-                "generation": st.column_config.TextColumn("DDR"),
-                "capacity_gb": st.column_config.NumberColumn("Capacity" if lang == "en" else "ความจุ", format="%d GB"),
-                "speed_mhz": st.column_config.NumberColumn("Speed" if lang == "en" else "บัสสปีด", format="%d MHz"),
-                "price_thb": st.column_config.NumberColumn("Price" if lang == "en" else "ราคาขายจริง", format="%d ฿"),
-                "price_per_gb": st.column_config.NumberColumn("Value (฿/GB)" if lang == "en" else "ความคุ้มค่า", format="%.1f ฿/GB"),
-                "url": st.column_config.LinkColumn("Shop Link" if lang == "en" else "ลิงก์หน้าร้าน")
-            },
-            hide_index=True
-        )
+            st.markdown(f"""
+            <div class="index-status-bar">
+                <div class="index-status-item">
+                    <span>[INDEX STATUS]</span>
+                    <span>{t['items_found']}:</span>
+                    <span class="index-status-highlight">{count}</span>
+                </div>
+                <div class="index-status-item">
+                    <span>| {t['stat_lowest_price']}:</span>
+                    <span class="index-status-val">{min_p:,} {t['currency']}</span>
+                </div>
+                <div class="index-status-item">
+                    <span>| {t['stat_highest_price']}:</span>
+                    <span class="index-status-val">{max_p:,} {t['currency']}</span>
+                </div>
+                <div class="index-status-item">
+                    <span>| {t['stat_avg_val']}:</span>
+                    <span class="index-status-val">{avg_val:.1f} {t['currency']}/GB</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            st.dataframe(
+                view_df[['brand', 'name', 'generation', 'capacity_gb', 'speed_mhz', 'price_thb', 'price_per_gb', 'url']],
+                use_container_width=True,
+                height=560,
+                column_config={
+                    "brand": st.column_config.TextColumn(t['col_brand'], width="small"),
+                    "name": st.column_config.TextColumn(t['col_name'], width="large"),
+                    "generation": st.column_config.TextColumn(t['col_gen'], width="extra-small"),
+                    "capacity_gb": st.column_config.NumberColumn(t['col_cap'], format="%d GB", width="small"),
+                    "speed_mhz": st.column_config.NumberColumn(t['col_speed'], format="%d MHz", width="small"),
+                    "price_thb": st.column_config.NumberColumn(t['col_price'], format=f"%d {t['currency']}", width="medium"),
+                    "price_per_gb": st.column_config.NumberColumn(t['col_val'], format=f"%.1f {t['currency']}/GB", width="medium"),
+                    "url": st.column_config.LinkColumn(t['col_link'], display_text=t['view_store_link'], width="medium")
+                },
+                hide_index=True
+            )
 
     # =========================================================
     # TAB 3: INSIGHTS & FUTURE FORECASTING
