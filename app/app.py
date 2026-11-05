@@ -192,7 +192,14 @@ TRANSLATIONS = {
         "model_stats_heading": "🤖 ประสิทธิภาพโมเดลทำนายราคา:",
         "live_sync_heading": "🌐 ซิงค์ราคาตลาดสดใหม่ (On-Demand Live Sync):",
         "live_sync_sub": "ระบบจะสั่งรัน Web Scraper ไปยังร้านค้าเพื่อสแกนราคารุ่นแรมล่าสุดและสกัดสเปกใหม่ทันที",
-        "live_sync_btn": "🔄 ซิงค์ข้อมูลราคาสดเดี๋ยวนี้"
+        "live_sync_btn": "🔄 ซิงค์ข้อมูลราคาสดเดี๋ยวนี้",
+        "forecast_heading": "🔮 การคาดการณ์แนวโน้มราคาในอนาคต (Future Price Forecasting)",
+        "forecast_sub": "ระบบวิเคราะห์แนวโน้มราคาในอีก 1 - 6 เดือนข้างหน้า อ้างอิงจากรอบการผลิตและปริมาณชิปหน่วยความจำในตลาดโลก",
+        "forecast_1m": "อีก 1 เดือน (In 1 Mo)",
+        "forecast_3m": "อีก 3 เดือน (In 3 Mos)",
+        "forecast_6m": "อีก 6 เดือน (In 6 Mos)",
+        "forecast_chart_title": "📈 เส้นทางทิศทางราคาในอีก 6 เดือนข้างหน้า (Price Forecast Curve)",
+        "timing_advice_title": "🎯 จังหวะเวลาในการซื้อ:"
     },
     "en": {
         "title": "⚡ RakaRAM (RAM Price Estimator)",
@@ -250,7 +257,14 @@ TRANSLATIONS = {
         "model_stats_heading": "🤖 Machine Learning Performance:",
         "live_sync_heading": "🌐 On-Demand Live Market Sync:",
         "live_sync_sub": "Trigger the web scraper to scan live listings from retailers and re-parse hardware specifications.",
-        "live_sync_btn": "🔄 Sync Live Retail Prices Now"
+        "live_sync_btn": "🔄 Sync Live Retail Prices Now",
+        "forecast_heading": "🔮 Future Price Trend Forecast (6-Month Projection)",
+        "forecast_sub": "Price trajectory forecast for the next 1 - 6 months based on DRAM semiconductor production cycles and adoption curves.",
+        "forecast_1m": "In 1 Month",
+        "forecast_3m": "In 3 Months",
+        "forecast_6m": "In 6 Months",
+        "forecast_chart_title": "📈 6-Month Projected Price Curve",
+        "timing_advice_title": "🎯 Purchasing Timing Guide:"
     }
 }
 
@@ -477,6 +491,44 @@ def main():
             </div>
             """, unsafe_allow_html=True)
 
+            # Future Price Forecast Section
+            fc = pred_result.get('forecast', {})
+            if fc:
+                st.markdown(f"#### {t['forecast_heading']}")
+                st.caption(t['forecast_sub'])
+
+                fc_col1, fc_col2, fc_col3 = st.columns(3)
+                with fc_col1:
+                    p1 = fc['forecast_1m_thb']
+                    diff1 = p1 - est_price
+                    st.metric(t['forecast_1m'], f"{p1:,} {t['currency']}", f"{diff1:+,} {t['currency']}")
+                with fc_col2:
+                    p3 = fc['forecast_3m_thb']
+                    diff3 = p3 - est_price
+                    st.metric(t['forecast_3m'], f"{p3:,} {t['currency']}", f"{diff3:+,} {t['currency']}")
+                with fc_col3:
+                    p6 = fc['forecast_6m_thb']
+                    diff6 = p6 - est_price
+                    st.metric(t['forecast_6m'], f"{p6:,} {t['currency']}", f"{diff6:+,} {t['currency']} ({fc['percent_change_6m']:+0.1f}%)")
+
+                rec_text = fc['recommendation_en'] if lang == "en" else fc['recommendation_th']
+                st.info(f"**{t['timing_advice_title']}** {rec_text}")
+
+                # Future Trend Curve Chart
+                timeline = fc.get('timeline', [])
+                if timeline:
+                    t_period_key = 'period_en' if lang == 'en' else 'period_th'
+                    timeline_df = pd.DataFrame([
+                        {
+                            "Timeline": item[t_period_key],
+                            "Price (THB)": item['price']
+                        }
+                        for item in timeline
+                    ])
+                    st.caption(t['forecast_chart_title'])
+                    st.line_chart(timeline_df.set_index("Timeline"), color="#3b82f6")
+
+            st.write("")
             col_eval1, col_eval2 = st.columns([1, 1])
 
             with col_eval1:
