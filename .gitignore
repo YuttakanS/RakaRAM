@@ -42,6 +42,9 @@ wheels/
 # Streamlit
 .streamlit/
 
+# Raw snapshots (keep latest only)
+data/raw/ram_raw_snapshot_*.json
+
 # OS specific
 Thumbs.db
 Desktop.ini
