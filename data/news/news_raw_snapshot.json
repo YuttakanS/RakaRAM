@@ -1,0 +1,14 @@
+{
+  "fetched_at": "2026-11-05T13:21:41.291850+00:00",
+  "total_items": 6,
+  "items": [
+    {
+      "id": "mem-001",
+      "title": "Samsung Reallocates Legacy DDR4 Wafer Lines to High-Bandwidth HBM3e and HBM4 Memory",
+      "source": "TrendForce / DigiTimes",
+      "published_at": "2026-11-03T08:30:00Z",
+      "url": "https://www.trendforce.com/news/dram-hbm-reallocation",
+      "summary": "Samsung Electronics is accelerating the transition of its wafer production lines away from mature DDR4 to fulfill massive server demand for HBM3e and next-gen HBM4 AI accelerators, reducing retail DDR4 supply."
+    }
+  ]
+}

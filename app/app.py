@@ -33,6 +33,7 @@ import streamlit as st
 
 from src.models.predict import RamPricePredictor
 from src.scraper.run_pipeline import run_data_pipeline
+from src.news.news_analyzer import get_latest_news_analysis, analyze_news_articles
 
 st.set_page_config(
     page_title="RakaRAM | ประเมินราคาแรม",
@@ -243,6 +244,19 @@ TRANSLATIONS = {
         "trend_comp_caption": "* DDR4 ทรงตัว/ขยับขึ้นเล็กน้อยจากการลดแผ่นเวเฟอร์ของโรงงานชิป | DDR5 ทยอยปรับลง 7–10% จากการขยาย Die Yield",
         "trend_driver_title": "ทำไมราคาถึงมีแนวโน้มแบบนี้? (เบื้องหลังวัฏจักรชิป DRAM)",
         "trend_driver_content": "**1. วงจรชิป DDR4 เข้าสู่ช่วงท้าย (Mature & Supply Squeeze):** โรงงานผลิตชิปชั้นนำ (Samsung, SK Hynix, Micron) กำลังลดกำลังการผลิต DDR4 อย่างมีนัยสำคัญเพื่อโยกแผ่นเวเฟอร์ไปผลิต HBM (High Bandwidth Memory) สำหรับ AI และ DDR5 ส่งผลให้ชิป DDR4 เริ่มตึงตัว ราคาจึงไม่ลดลงอีกแล้วและมีแนวโน้มขยับขึ้นเล็กน้อย\n\n**2. วงจรชิป DDR5 เข้าสู่จุดคุ้มทุน (Yield & Density Expansion):** ผลผลิตชิปต่อเวเฟอร์ (Die Yield) ของ DDR5 สูงขึ้นเรื่อย ๆ พร้อมการเปิดตัวชิปความหนาแน่นสูงรุ่นใหม่ (24Gb/32Gb per die) ทำให้ต้นทุนต่อ GB ของ DDR5 ลดลงต่อเนื่องเฉลี่ย 5–10% ในช่วง 6 เดือนข้างหน้า\n\n**3. สเปกความเร็วสูง (High-End 6400MHz+):** มีแนวโน้มราคาจะปรับลดลงเร็วกว่าสเปกทั่วไป เนื่องจากเทคโนโลยีเริ่มกลายเป็นมาตรฐานกระแสหลัก (Commoditization)",
+        "news_heading": "เรดาร์ข่าวตลาดชิปโลก (Global DRAM News Radar)",
+        "news_sub": "ตรวจจับสัญญาณข่าวอุปสงค์-อุปทาน และผลผลิตโรงงานชิปทั่วโลก ที่ส่งผลต่อราคาขายปลีกในไทย",
+        "news_sync_btn": "รีเฟรชข่าวล่าสุด",
+        "news_sync_spinner": "กำลังดึงและวิเคราะห์ข่าวจากตลาดโลก...",
+        "news_sentiment_title": "ทิศทางอารมณ์ตลาดรวม",
+        "news_net_ddr4": "แรงกดดันราคา DDR4",
+        "news_net_ddr5": "แรงกดดันราคา DDR5",
+        "news_source": "แหล่งข่าว",
+        "news_read_more": "อ่านข่าวต้นฉบับ",
+        "news_tag_bullish": "แรงกดดันราคาขึ้น",
+        "news_tag_bearish": "ทิศทางราคาปรับลง",
+        "news_tag_neutral": "ทรงตัว/ไม่มีผลกระทบ",
+        "news_category": "หมวดหมู่",
         "brand_heading": "ราคาต่อ GB แยกตามยี่ห้อ (ค่ากลาง)",
         "brand_sub": "ตัวเลขต่ำ = ได้ความจุมากกว่าต่อเงินที่จ่าย",
         "speed_heading": "ความเร็วบัสกับราคา",
@@ -354,6 +368,19 @@ TRANSLATIONS = {
         "trend_comp_caption": "* DDR4 prices remain flat or drift slightly upward due to foundry wafer cuts | DDR5 prices ease by 7-10% as die yields mature",
         "trend_driver_title": "Why this price movement? (Semiconductor DRAM Market Drivers)",
         "trend_driver_content": "**1. DDR4 Legacy Cycle (Supply Squeeze):** Major DRAM foundries (Samsung, SK Hynix, Micron) are cutting DDR4 wafer allocation to prioritize high-margin HBM for AI accelerators and server DDR5. This tightens DDR4 inventory, keeping prices flat or slightly drifting upward.\n\n**2. DDR5 Yield Maturation & Density Expansion:** DDR5 wafer die yields are stabilizing, and higher density dies (24Gb/32Gb) are reaching retail modules, driving per-gigabyte costs down by 5-10% over the next 6 months.\n\n**3. High-Frequency Premiums (6400MHz+):** Premium enthusiast kits decay faster in price as higher memory clocks become standardized in mainstream retail platforms.",
+        "news_heading": "Global DRAM News Radar",
+        "news_sub": "Tracking global semiconductor supply, demand, and yield catalysts driving retail memory prices",
+        "news_sync_btn": "Refresh Global News",
+        "news_sync_spinner": "Fetching & analyzing global memory intelligence...",
+        "news_sentiment_title": "Market Sentiment Mood",
+        "news_net_ddr4": "Net Pressure on DDR4",
+        "news_net_ddr5": "Net Pressure on DDR5",
+        "news_source": "Source",
+        "news_read_more": "Original Article",
+        "news_tag_bullish": "Upward Pressure",
+        "news_tag_bearish": "Downward Easing",
+        "news_tag_neutral": "Neutral",
+        "news_category": "Category",
         "brand_heading": "Price per GB by brand (median)",
         "brand_sub": "Lower means more capacity for the money.",
         "speed_heading": "Bus speed vs. price",
@@ -547,7 +574,14 @@ def resolve_forecast(res, price, gen, cap):
     }
 
 
-def build_forecast_timeline(current_price, generation, speed_mhz, capacity_gb, lang="th"):
+def build_forecast_timeline(current_price, generation, speed_mhz, capacity_gb, lang="th", news_impact_pct=None):
+    if news_impact_pct is None:
+        try:
+            news_res = get_latest_news_analysis()
+            key = "net_impact_ddr4_pct" if generation == "DDR4" else "net_impact_ddr5_pct"
+            news_impact_pct = news_res.get(key, 0.0)
+        except Exception:
+            news_impact_pct = 0.0
     if lang == "th":
         months = ["พ.ย. 26 (ปัจจุบัน)", "ธ.ค. 26", "ม.ค. 27", "ก.พ. 27", "มี.ค. 27", "เม.ย. 27", "พ.ค. 27"]
         events = [
@@ -583,6 +617,10 @@ def build_forecast_timeline(current_price, generation, speed_mhz, capacity_gb, l
         else:
             factors = [1.000, 0.987, 0.973, 0.960, 0.948, 0.938, 0.930]
             volatility = 0.018
+
+    if news_impact_pct:
+        adj = (news_impact_pct / 100.0) * 0.4
+        factors = [round(f + (adj * (i / 6.0)), 4) for i, f in enumerate(factors)]
 
     rows = []
     for i, (m, f, ev) in enumerate(zip(months, factors, events)):
@@ -655,6 +693,10 @@ def build_market_comparison_timeline(lang="th"):
 
     d4_rates = [100.0, 100.3, 100.8, 101.5, 102.1, 102.7, 103.2]
     d5_rates = [100.0, 98.7, 97.3, 96.0, 94.8, 93.8, 93.0]
+
+    if news_impact_pct:
+        adj = (news_impact_pct / 100.0) * 0.4
+        factors = [round(f + (adj * (i / 6.0)), 4) for i, f in enumerate(factors)]
 
     rows = []
     for m, r4, r5, n4, n5 in zip(months, d4_rates, d5_rates, notes_d4, notes_d5):
@@ -1094,6 +1136,92 @@ def render_trends(df, t, lang, version, model_ready):
 
         except Exception as e:
             st.error(f"{t['model_err']} {e}")
+
+    # -----------------------------------------------------------------------
+    # Global DRAM News Radar Widget
+    # -----------------------------------------------------------------------
+    st.write("")
+    col_n_head, col_n_btn = st.columns([3.5, 1.2])
+    with col_n_head:
+        st.markdown(f"#### {t['news_heading']}")
+        st.caption(t["news_sub"])
+    with col_n_btn:
+        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+        if st.button(t["news_sync_btn"], key="btn_sync_news", **STRETCH):
+            with st.spinner(t["news_sync_spinner"]):
+                try:
+                    analyze_news_articles(force_refresh=True)
+                    st.toast("อัปเดตข่าวตลาดชิปโลกเรียบร้อยแล้ว!" if lang == "th" else "Global memory intelligence refreshed!")
+                    st.rerun()
+                except Exception as ex:
+                    st.error(f"Error syncing news: {ex}")
+
+    try:
+        news_data = get_latest_news_analysis()
+        s_label = news_data.get(f"market_sentiment_{lang}", news_data.get("market_sentiment_th", ""))
+        net_d4 = news_data.get("net_impact_ddr4_pct", 0.0)
+        net_d5 = news_data.get("net_impact_ddr5_pct", 0.0)
+
+        md(f"""
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin:8px 0 16px 0;">
+          <div class="fc-cell" style="grid-column: span 2;">
+            <div class="fc-label">{t['news_sentiment_title']}</div>
+            <div class="fc-val" style="font-size:15px; font-weight:600; line-height:1.4; color:var(--ink);">{html.escape(s_label)}</div>
+          </div>
+          <div class="fc-cell">
+            <div class="fc-label">{t['news_net_ddr4']}</div>
+            <div class="fc-val">{net_d4:+.2f}%</div>
+            <div class="fc-delta {'up' if net_d4 > 0 else 'down'}">{'🔴 ' + t['news_tag_bullish'] if net_d4 > 0 else '🟢 ' + t['news_tag_bearish']}</div>
+          </div>
+          <div class="fc-cell">
+            <div class="fc-label">{t['news_net_ddr5']}</div>
+            <div class="fc-val">{net_d5:+.2f}%</div>
+            <div class="fc-delta {'down' if net_d5 < 0 else 'up'}">{'🟢 ' + t['news_tag_bearish'] if net_d5 < 0 else '🔴 ' + t['news_tag_bullish']}</div>
+          </div>
+        </div>
+        """)
+
+        articles = news_data.get("articles", [])[:6]
+        if articles:
+            col_nl, col_nr = st.columns(2, gap="large")
+            for i, art in enumerate(articles):
+                target_col = col_nl if i % 2 == 0 else col_nr
+                with target_col:
+                    mul_pct = art.get("impact_multiplier_pct", 0.0)
+                    badge_style = "background:#E3F1EB; color:#0B5D46; border:1px solid #A8D5C2;" if mul_pct < 0 else (
+                        "background:#FDE8E8; color:#9B1C1C; border:1px solid #F8B4B4;" if mul_pct > 0 else
+                        "background:#F3F4F6; color:#4B5563; border:1px solid #E5E7EB;"
+                    )
+                    dir_text = t['news_tag_bearish'] if mul_pct < 0 else (t['news_tag_bullish'] if mul_pct > 0 else t['news_tag_neutral'])
+                    gen_tag = art.get("target_generation", "ALL")
+                    title_text = art.get("headline_th" if lang == "th" else "title", art["title"])
+                    summary_text = art.get("summary_th" if lang == "th" else "summary", art["summary"])
+                    source_text = art.get("source", "Global Tech News")
+                    pub_date = art.get("published_at", "")[:10]
+
+                    md(f"""
+                    <div style="background:var(--card); border:1px solid var(--line); border-radius:6px; padding:12px 14px; margin-bottom:10px;">
+                      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+                        <span style="font-size:12px; color:var(--muted); font-weight:500;">📰 {html.escape(source_text)} · {pub_date}</span>
+                        <span style="font-size:11px; font-weight:600; padding:2px 8px; border-radius:12px; {badge_style}">
+                          {gen_tag} {mul_pct:+.1f}% ({dir_text})
+                        </span>
+                      </div>
+                      <div style="font-weight:600; font-size:14px; line-height:1.4; margin-bottom:6px; color:var(--ink);">
+                        {html.escape(title_text)}
+                      </div>
+                      <div style="font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:8px;">
+                        {html.escape(summary_text)}
+                      </div>
+                      <div style="text-align:right;">
+                        <a href="{html.escape(art.get('url', '#'))}" target="_blank" style="font-size:12px; font-weight:500; color:var(--pcb); text-decoration:none;">
+                          {t['news_read_more']} →
+                        </a>
+                      </div>
+                    </div>
+                    """)
+    except Exception as ex:
+        pass
 
     st.write("")
     brand_val, scatter = market_frames(df, version)

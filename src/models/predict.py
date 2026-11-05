@@ -5,6 +5,11 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict, Any, List
 
+try:
+    from src.news.news_analyzer import get_latest_news_analysis
+except ImportError:
+    get_latest_news_analysis = None
+
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 DEFAULT_MODEL_PATH = str(ROOT_DIR / "saved_models" / "ram_price_model.joblib")
 
@@ -21,13 +26,23 @@ class RamPricePredictor:
         current_price: int,
         generation: str,
         speed_mhz: int,
-        capacity_gb: int
+        capacity_gb: int,
+        news_impact_pct: float = None
     ) -> Dict[str, Any]:
         """
-        Forecasting future price movements based on semiconductor market lifecycle:
+        Forecasting future price movements based on semiconductor market lifecycle & news sentiment:
         - DDR4: Mature/Legacy tech. Fab supply shrinking; prices stabilized or slightly rising (+0.5% to +3%).
         - DDR5: Expanding adoption. Fab yields improving; prices dropping steadily (-3% to -10%).
+        - News Impact: Calibrated multiplier (+/- 1% to 5%) from real-time global DRAM intelligence.
         """
+        if news_impact_pct is None and get_latest_news_analysis is not None:
+            try:
+                news_res = get_latest_news_analysis()
+                key = "net_impact_ddr4_pct" if generation == "DDR4" else "net_impact_ddr5_pct"
+                news_impact_pct = news_res.get(key, 0.0)
+            except Exception:
+                news_impact_pct = 0.0
+
         if generation == "DDR4":
             # DDR4 legacy trend: bottomed out, slight upward drift over 6 months
             rate_1m = 1.004   # +0.4%
@@ -63,6 +78,13 @@ class RamPricePredictor:
                 rec_badge_en = "Good Time to Buy"
                 rec_type = "good_time"
 
+        # Apply news sentiment multiplier smoothly
+        if news_impact_pct:
+            adj = (news_impact_pct / 100.0) * 0.4
+            rate_1m = round(rate_1m + adj * 0.3, 4)
+            rate_3m = round(rate_3m + adj * 0.7, 4)
+            rate_6m = round(rate_6m + adj * 1.0, 4)
+
         p_1m = max(400, round((current_price * rate_1m) / 10) * 10)
         p_3m = max(400, round((current_price * rate_3m) / 10) * 10)
         p_6m = max(400, round((current_price * rate_6m) / 10) * 10)
@@ -81,6 +103,7 @@ class RamPricePredictor:
             "forecast_6m_thb": p_6m,
             "trend_direction": trend_dir,
             "percent_change_6m": pct_6m,
+            "news_impact_pct": news_impact_pct,
             "recommendation_th": rec_th,
             "recommendation_en": rec_en,
             "recommendation_badge_th": rec_badge_th,

@@ -44,10 +44,17 @@ flowchart TD
    - ใช้โมเดล **Random Forest Regressor** ร่วมกับ **Log-Normal Target Transformation**
    - ให้ค่า **$R^2 = 0.9533$** บน Held-out Test Set และ **MAE ต่ำเพียง ±1,434 บาท**
    - ประเมินราคาขายที่เหมาะสม พร้อมช่วงราคาแนะนำ (Fair Price Range)
-5. **Interactive Streamlit Web Dashboard**:
-   - แดชบอร์ดสรุปตัวเลขตลาดปัจจุบันแบบสด
+5. **Linear Regression Price Structure Analysis**:
+   - ถอดรหัสโครงสร้างราคาตลาดจริงด้วยสถิติ OLS ($R^2 = 0.8739$)
+   - คำนวณมูลค่าความจุ (+747 บ./GB), บัสสปีด (+469 บ./100MHz), ความหน่วง (-1,397 บ./CL) และแยกลาดชัน DDR4 (~289 บ./GB) vs DDR5 (~1,081 บ./GB)
+6. **Global DRAM News Intelligence & Sentiment Analysis**:
+   - ตรวจจับสัญญาณข่าวสารและอุปสงค์-อุปทานจากโรงงานชิปทั่วโลก (Samsung, SK Hynix, Micron)
+   - สกัดแรงกระเพื่อมจากกระแส HBM/AI, การลดกำลังผลิตเวเฟอร์, และความก้าวหน้าของ Die Yield
+   - ปรับจูนเส้นพยากรณ์ราคา 6 เดือนข้างหน้าแบบไดนามิกพร้อมแถบความผันผวน (Price Corridor)
+7. **Interactive Streamlit Web Dashboard**:
+   - แดชบอร์ดสรุปตัวเลขตลาดปัจจุบันแบบสด และเรดาร์ข่าวตลาดชิปโลก
    - เครื่องคำนวณและทำนายราคาแรมจากสเปกแบบ Real-time
-   - ระบบ On-Demand Live Sync เพื่อสั่งดึงราคาสดใหม่ได้ในคลิกเดียว
+   - ระบบ On-Demand Live Sync เพื่อสั่งดึงราคาสดและข่าวสารใหม่ได้ในคลิกเดียว
 
 ---
 
@@ -114,13 +121,15 @@ python -m src.models.train
 RakaRAM/
 ├── data/
 │   ├── raw/                        # ข้อมูลดิบที่สแครปมาจากร้านค้า (JSON Snapshots)
-│   └── processed/                  # ชุดข้อมูลจริงที่ผ่านการสกัดสเปก (ram_dataset_real.csv)
+│   ├── processed/                  # ชุดข้อมูลจริงที่ผ่านการสกัดสเปก (ram_dataset_real.csv)
+│   └── news/                       # ข้อมูลข่าวสารตลาดชิปและผลวิเคราะห์ Sentiment
 ├── src/
 │   ├── scraper/                    # โมดูล Web Scraper (JIB Scraper, Pipeline Runner)
 │   ├── parser/                     # Regex Spec Extractor (แยก brand, DDR, Bus, CL, RGB)
+│   ├── news/                       # โมดูล News Fetcher & Sentiment Impact Analyzer
 │   ├── models/                     # ML Model Training & Real-time Predictor
 │   └── utils/                      # Logging & Utilities
-├── notebooks/                      # สคริปต์ Exploratory Data Analysis (EDA)
+├── notebooks/                      # สคริปต์ EDA และ Linear Regression Analysis
 ├── reports/
 │   └── figures/                    # กราฟิกชาร์ตสรุปสถิติตลาดแรม (.png)
 ├── saved_models/                   # โมเดล ML ที่บันทึกไว้ (.joblib และ metadata .json)
