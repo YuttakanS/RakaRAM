@@ -1,9 +1,17 @@
 import os
 import argparse
-import joblib
-import pandas as pd
 from pathlib import Path
 from typing import Dict, Any, List
+
+try:
+    import joblib
+except Exception:
+    joblib = None
+
+try:
+    import pandas as pd
+except Exception:
+    pd = None
 
 try:
     from src.news.news_analyzer import get_latest_news_analysis
