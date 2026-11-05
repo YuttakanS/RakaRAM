@@ -135,15 +135,15 @@ def fetch_dram_news(force_live: bool = False) -> List[Dict[str, Any]]:
 
     # Combine or fallback
     if live_items:
-        # Merge live items with curated items (avoiding duplicates)
+        # Merge live items with curated structural catalysts (avoiding duplicates)
         seen_titles = set()
         merged = []
-        for it in live_items + CURATED_FALLBACK_NEWS:
+        for it in CURATED_FALLBACK_NEWS[:3] + live_items + CURATED_FALLBACK_NEWS[3:]:
             simplified = re.sub(r"[^a-zA-Z0-9]", "", it["title"].lower())[:40]
             if simplified not in seen_titles:
                 seen_titles.add(simplified)
                 merged.append(it)
-        final_news = merged[:10]
+        final_news = merged[:12]
     else:
         logger.info("Using curated semiconductor market intelligence snapshot.")
         final_news = CURATED_FALLBACK_NEWS

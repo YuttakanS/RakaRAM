@@ -28,6 +28,20 @@ class TestNewsIntelligence(unittest.TestCase):
         self.assertEqual(detect_generation("Samsung reduces legacy DDR4 wafer line"), "DDR4")
         self.assertEqual(detect_generation("Micron introduces high density DDR5 die"), "DDR5")
         self.assertEqual(detect_generation("Global DRAM pricing outlook across DDR4 and DDR5"), "ALL")
+        # Title priority test
+        self.assertEqual(
+            detect_generation(
+                "Consumer Transition to DDR5",
+                "With newer desktop architectures abandoning DDR4 support completely..."
+            ),
+            "DDR5"
+        )
+
+    def test_market_divergence_impact(self):
+        res = analyze_news_articles(CURATED_FALLBACK_NEWS)
+        self.assertEqual(res["overall_status"], "DIVERGENT")
+        self.assertGreater(res["net_impact_ddr4_pct"], 0)
+        self.assertLess(res["net_impact_ddr5_pct"], 0)
 
     def test_analyze_article_bullish_hbm(self):
         art = {

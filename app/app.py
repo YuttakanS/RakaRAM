@@ -694,6 +694,19 @@ def build_market_comparison_timeline(lang="th"):
     d4_rates = [100.0, 100.3, 100.8, 101.5, 102.1, 102.7, 103.2]
     d5_rates = [100.0, 98.7, 97.3, 96.0, 94.8, 93.8, 93.0]
 
+    try:
+        news_res = get_latest_news_analysis()
+        d4_impact = news_res.get("net_impact_ddr4_pct", 0.0)
+        d5_impact = news_res.get("net_impact_ddr5_pct", 0.0)
+        if d4_impact:
+            adj4 = (d4_impact / 100.0) * 0.4
+            d4_rates = [round(r + (adj4 * (i / 6.0) * 100.0), 1) for i, r in enumerate(d4_rates)]
+        if d5_impact:
+            adj5 = (d5_impact / 100.0) * 0.4
+            d5_rates = [round(r + (adj5 * (i / 6.0) * 100.0), 1) for i, r in enumerate(d5_rates)]
+    except Exception:
+        pass
+
     rows = []
     for m, r4, r5, n4, n5 in zip(months, d4_rates, d5_rates, notes_d4, notes_d5):
         rows.append({
@@ -1105,7 +1118,18 @@ def render_trends(df, t, lang, version, model_ready):
 
                 chart = (band + rule + line + points).properties(height=320)
                 st.altair_chart(chart, use_container_width=True)
-                st.caption(t["trend_chart_caption"])
+                try:
+                    news_intel = get_latest_news_analysis()
+                    k = "net_impact_ddr4_pct" if spec["gen"] == "DDR4" else "net_impact_ddr5_pct"
+                    live_adj = news_intel.get(k, 0.0)
+                    impact_note = (
+                        f" | 📡 รวมสัญญาณข่าวตลาดโลก ({spec['gen']} {live_adj:+.2f}%)"
+                        if lang == "th" else
+                        f" | 📡 Reflects live global news ({spec['gen']} {live_adj:+.2f}%)"
+                    ) if live_adj != 0 else ""
+                except Exception:
+                    impact_note = ""
+                st.caption(f"{t['trend_chart_caption']}{impact_note}")
 
             else:
                 df_comp = build_market_comparison_timeline(lang=lang)
@@ -1125,7 +1149,18 @@ def render_trends(df, t, lang, version, model_ready):
                     ]
                 ).properties(height=320)
                 st.altair_chart(chart_comp, use_container_width=True)
-                st.caption(t["trend_comp_caption"])
+                try:
+                    news_intel = get_latest_news_analysis()
+                    d4_adj = news_intel.get("net_impact_ddr4_pct", 0.0)
+                    d5_adj = news_intel.get("net_impact_ddr5_pct", 0.0)
+                    comp_note = (
+                        f" | 📡 ปรับตามข่าวตลาดโลก: DDR4 {d4_adj:+.2f}% · DDR5 {d5_adj:+.2f}%"
+                        if lang == "th" else
+                        f" | 📡 Adjusted by news: DDR4 {d4_adj:+.2f}% · DDR5 {d5_adj:+.2f}%"
+                    ) if (d4_adj or d5_adj) else ""
+                except Exception:
+                    comp_note = ""
+                st.caption(f"{t['trend_comp_caption']}{comp_note}")
 
             with st.expander(t["trend_driver_title"]):
                 st.markdown(t["trend_driver_content"])
