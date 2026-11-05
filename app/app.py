@@ -141,7 +141,7 @@ TRANSLATIONS = {
         "subtitle": "ระบบเช็กราคากลางและประเมินราคาแรมคอมพิวเตอร์และโน้ตบุ๊ก ด้วย AI อ้างอิงจากราคาขายจริงในร้านค้าไอทีไทยแบบ Real-time",
         "tab1": "🔮 1. ประเมินราคาแรม (Price Estimator)",
         "tab2": "🛒 2. คลังราคาสินค้าจริง (Market Catalog)",
-        "tab3": "📊 3. กราฟตลาด & ระบบ AI (Insights)",
+        "tab3": "📊 3. กราฟตลาด & คาดการณ์ราคาในอนาคต (Trends & Forecast)",
         "method1_heading": "🎯 วิธีที่ 1: เลือกสเปกยอดนิยม (คลิกเดียวรู้ราคา)",
         "method1_sub": "หากคุณไม่แน่ใจเรื่องสเปก สามารถคลิกเลือกชุดสเปกที่แนะนำด้านล่าง ระบบจะคำนวณราคาประเมินให้ทันทีครับ:",
         "select_this_preset": "เลือกชุดนี้ 👉",
@@ -206,7 +206,7 @@ TRANSLATIONS = {
         "subtitle": "Fair market price estimator & hardware catalog for desktop & laptop RAM powered by AI using live Thai retailer market prices.",
         "tab1": "🔮 1. Price Estimator",
         "tab2": "🛒 2. Live Market Catalog",
-        "tab3": "📊 3. Market Insights & AI",
+        "tab3": "📊 3. Market Trends & Future Forecasts",
         "method1_heading": "🎯 Method 1: Popular Spec Presets (1-Click Price)",
         "method1_sub": "If you are not sure about specs, click any preset below to calculate the fair market price instantly:",
         "select_this_preset": "Select This 👉",
@@ -491,42 +491,17 @@ def main():
             </div>
             """, unsafe_allow_html=True)
 
-            # Future Price Forecast Section
+            # Quick Hint to Tab 3 for Future Price Forecasting
             fc = pred_result.get('forecast', {})
             if fc:
-                st.markdown(f"#### {t['forecast_heading']}")
-                st.caption(t['forecast_sub'])
-
-                fc_col1, fc_col2, fc_col3 = st.columns(3)
-                with fc_col1:
-                    p1 = fc['forecast_1m_thb']
-                    diff1 = p1 - est_price
-                    st.metric(t['forecast_1m'], f"{p1:,} {t['currency']}", f"{diff1:+,} {t['currency']}")
-                with fc_col2:
-                    p3 = fc['forecast_3m_thb']
-                    diff3 = p3 - est_price
-                    st.metric(t['forecast_3m'], f"{p3:,} {t['currency']}", f"{diff3:+,} {t['currency']}")
-                with fc_col3:
-                    p6 = fc['forecast_6m_thb']
-                    diff6 = p6 - est_price
-                    st.metric(t['forecast_6m'], f"{p6:,} {t['currency']}", f"{diff6:+,} {t['currency']} ({fc['percent_change_6m']:+0.1f}%)")
-
-                rec_text = fc['recommendation_en'] if lang == "en" else fc['recommendation_th']
-                st.info(f"**{t['timing_advice_title']}** {rec_text}")
-
-                # Future Trend Curve Chart
-                timeline = fc.get('timeline', [])
-                if timeline:
-                    t_period_key = 'period_en' if lang == 'en' else 'period_th'
-                    timeline_df = pd.DataFrame([
-                        {
-                            "Timeline": item[t_period_key],
-                            "Price (THB)": item['price']
-                        }
-                        for item in timeline
-                    ])
-                    st.caption(t['forecast_chart_title'])
-                    st.line_chart(timeline_df.set_index("Timeline"), color="#3b82f6")
+                rec_badge = fc['recommendation_badge_en'] if lang == "en" else fc['recommendation_badge_th']
+                trend_change = f"{fc['percent_change_6m']:+0.1f}%"
+                hint_text = (
+                    f"📈 **แนวโน้มราคา 6 เดือน**: `{trend_change}` ({rec_badge}) — ดูการคาดการณ์แบบละเอียดและกราฟเส้นทิศทางราคาได้ที่แท็บ **📊 3. กราฟตลาด**"
+                    if lang == "th" else
+                    f"📈 **6-Month Price Trend**: `{trend_change}` ({rec_badge}) — View full projection charts in **📊 3. Market Trends**"
+                )
+                st.caption(hint_text)
 
             st.write("")
             col_eval1, col_eval2 = st.columns([1, 1])
@@ -642,11 +617,75 @@ def main():
         )
 
     # =========================================================
-    # TAB 3: INSIGHTS & AI PIPELINE
+    # TAB 3: INSIGHTS & FUTURE FORECASTING
     # =========================================================
     with tab3:
         st.markdown(f"### {t['tab3']}")
 
+        # ---------------- Section 1: Future Price Forecasting ----------------
+        st.markdown(f"#### {t['forecast_heading']}")
+        st.write(t['forecast_sub'])
+
+        # Interactive Spec Picker for Forecasting
+        f_box_c1, f_box_c2, f_box_c3 = st.columns(3)
+        with f_box_c1:
+            fc_gen = st.radio("เลือกรุ่นที่ต้องการดูแนวโน้ม" if lang == "th" else "Select Generation", ["DDR4", "DDR5"], horizontal=True, index=1 if curr_spec.get('gen') == 'DDR5' else 0)
+        with f_box_c2:
+            fc_cap_opts = [8, 16, 32, 64] if fc_gen == "DDR4" else [16, 32, 64, 96]
+            fc_cap = st.selectbox("ความจุที่ต้องการคาดการณ์" if lang == "th" else "Select Capacity", fc_cap_opts, index=1)
+        with f_box_c3:
+            fc_brand = st.selectbox("ยี่ห้ออ้างอิง" if lang == "th" else "Reference Brand", ["Kingston", "Corsair", "G.Skill", "ADATA", "Lexar"])
+
+        # Calculate forecast using the predictor
+        if predictor:
+            fc_res = predictor.predict(
+                brand=fc_brand,
+                generation=fc_gen,
+                capacity_gb=fc_cap,
+                modules=2,
+                speed_mhz=6000 if fc_gen == "DDR5" else 3200,
+                cas_latency=36 if fc_gen == "DDR5" else 16,
+                has_rgb=1,
+                form_factor="UDIMM"
+            )
+            fc_data = fc_res.get('forecast', {})
+            cur_p = fc_res['estimated_price_thb']
+
+            # 3 Forecast Metric Cards
+            m_c1, m_c2, m_c3, m_c4 = st.columns(4)
+            with m_c1:
+                st.metric("ราคาปัจจุบัน (Now)" if lang == "th" else "Current Price", f"{cur_p:,} {t['currency']}")
+            with m_c2:
+                p1 = fc_data['forecast_1m_thb']
+                st.metric(t['forecast_1m'], f"{p1:,} {t['currency']}", f"{p1 - cur_p:+,} {t['currency']}")
+            with m_c3:
+                p3 = fc_data['forecast_3m_thb']
+                st.metric(t['forecast_3m'], f"{p3:,} {t['currency']}", f"{p3 - cur_p:+,} {t['currency']}")
+            with m_c4:
+                p6 = fc_data['forecast_6m_thb']
+                st.metric(t['forecast_6m'], f"{p6:,} {t['currency']}", f"{p6 - cur_p:+,} {t['currency']} ({fc_data['percent_change_6m']:+0.1f}%)")
+
+            # Timing Decision Banner
+            rec_text = fc_data['recommendation_en'] if lang == "en" else fc_data['recommendation_th']
+            st.info(f"**{t['timing_advice_title']}** {rec_text}")
+
+            # Projected Trend Curve Chart
+            timeline = fc_data.get('timeline', [])
+            if timeline:
+                t_period_key = 'period_en' if lang == 'en' else 'period_th'
+                timeline_df = pd.DataFrame([
+                    {
+                        "Timeline": item[t_period_key],
+                        f"{fc_brand} {fc_gen} {fc_cap}GB (THB)": item['price']
+                    }
+                    for item in timeline
+                ])
+                st.caption(f"{t['forecast_chart_title']}: {fc_brand} {fc_gen} {fc_cap}GB")
+                st.line_chart(timeline_df.set_index("Timeline"), color="#2563eb")
+
+        st.markdown("---")
+
+        # ---------------- Section 2: Current Market Analytics ----------------
         stat_col1, stat_col2 = st.columns(2)
         with stat_col1:
             st.markdown(f"##### {t['insights_brand_heading']}")
@@ -661,6 +700,8 @@ def main():
             st.caption(t['insights_speed_sub'])
 
         st.markdown("---")
+
+        # ---------------- Section 3: AI Model & Live Sync ----------------
         st.markdown(f"### {t['pipeline_heading']}")
         
         info_c1, info_c2 = st.columns([1, 1])
