@@ -2,12 +2,14 @@ import os
 import argparse
 import joblib
 import pandas as pd
+from pathlib import Path
 from typing import Dict, Any
 
-MODEL_PATH = "saved_models/ram_price_model.joblib"
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+DEFAULT_MODEL_PATH = str(ROOT_DIR / "saved_models" / "ram_price_model.joblib")
 
 class RamPricePredictor:
-    def __init__(self, model_path: str = MODEL_PATH):
+    def __init__(self, model_path: str = DEFAULT_MODEL_PATH):
         if not os.path.exists(model_path):
             raise FileNotFoundError(
                 f"Model file not found at '{model_path}'. Please run 'python -m src.models.train' first."

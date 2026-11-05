@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Add project root directory to sys.path so 'src' can be imported regardless of execution cwd
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -55,8 +63,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-DATASET_PATH = "data/processed/ram_dataset_real.csv"
-METADATA_PATH = "saved_models/model_metadata.json"
+DATASET_PATH = str(ROOT_DIR / "data" / "processed" / "ram_dataset_real.csv")
+METADATA_PATH = str(ROOT_DIR / "saved_models" / "model_metadata.json")
 
 @st.cache_data
 def load_dataset():
