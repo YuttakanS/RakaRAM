@@ -1,0 +1,9 @@
+[project]
+name = "rakaram"
+version = "1.0.0"
+description = "RakaRAM - RAM Price Estimation & Global Semiconductor Market Intelligence"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.vercel]
+entrypoint = "main.py"
