@@ -7,6 +7,8 @@
 
 **RakaRAM** คือระบบวิเคราะห์ตลาดและทำนายราคาแรมคอมพิวเตอร์ (RAM Price Analysis & Real-time Prediction) ที่สร้างขึ้นเพื่อดึงข้อมูลราคาและสเปกจริงจากร้านค้าไอทีชั้นนำในไทย นำมาผ่านกระบวนการ Data Pipeline, วิเคราะห์สถิติความคุ้มค่า (EDA), และฝึกโมเดล Machine Learning (Log-Transformed Regression) สำหรับประเมินราคาตามสเปกแบบ Real-time พร้อมแสดงผลผ่าน Interactive Web Dashboard ด้วย **Streamlit**
 
+![RakaRAM Dashboard UI Preview](reports/figures/rakaram_dashboard_ui.jpg)
+
 ---
 
 ## 🏗️ สถาปัตยกรรมระบบ (System Architecture)
