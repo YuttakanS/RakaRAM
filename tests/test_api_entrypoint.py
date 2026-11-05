@@ -17,10 +17,17 @@ class TestApiEntrypoint(unittest.TestCase):
         self.assertIsNotNone(main.app)
 
     def test_root_endpoint(self):
-        res = main.root()
+        # Test API JSON info
+        res = main.api_info()
         self.assertEqual(res["status"], "online")
         self.assertEqual(res["service"], "RakaRAM API")
         self.assertIn("docs", res)
+
+        # Test Web Dashboard HTML
+        class MockRequest:
+            headers = {"accept": "text/html"}
+        html_res = main.index_page(MockRequest())
+        self.assertIn("RakaRAM", html_res.body.decode("utf-8"))
 
     def test_health_endpoint(self):
         res = main.health_check()
